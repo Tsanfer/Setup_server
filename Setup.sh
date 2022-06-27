@@ -2,24 +2,46 @@
 # 更新日期：2022/06/23
 # 文件位置：$HOME
 
-github_download="github.com"
-github_raw="raw.githubusercontent.com"
+Install_docker(){
+  echo
+  echo "---------- 安装 Docker ----------"
+  echo
+  # sudo apt-get remove docker docker-engine docker.io containerd runc && \ 
+  sudo apt-get install \
+    ca-certificates \
+    curl \
+    gnupg \
+    lsb-release -y && \
+  sudo mkdir -p /etc/apt/keyrings && \
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg && \
+  echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null && \
+  sudo apt-get update -y && \
+  sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+}
+
+# github_download="github.com"
+# github_raw="raw.githubusercontent.com"
 
 while true
 do
   read -r -p "是否启用国内加速? [Y/n] " input
   case $input in
       [yY][eE][sS]|[yY])
-      git config --global url."https://hub.fastgit.xyz/".insteadOf https://github.com/
-      github_raw="raw.fastgit.org"
-      github_download="download.fastgit.org"
+      # git config --global url."https://hub.fastgit.xyz/".insteadOf https://github.com/
+      # github_raw="raw.fastgit.org"
+      # github_download="download.fastgit.org"
+      Install_docker && \
+      wget -O ~/FastGithub.yaml https://raw.fastgit.org/dotnetcore/FastGithub/raw/master/docker-compose.yaml && \
+      docker compose -f ~/FastGithub.yaml up -d
       break
       ;;
 
       [nN][oO]|[nN])
-      git config --global --remove-section url."https://hub.fastgit.xyz/"
-      github_raw="raw.githubusercontent.com"
-      github_download="github.com"
+      # git config --global --remove-section url."https://hub.fastgit.xyz/"
+      # github_raw="raw.githubusercontent.com"
+      # github_download="github.com"
       break	       	
       ;;
 
@@ -62,22 +84,6 @@ then
   sed -i '$a\eval "$(oh-my-posh --init --shell zsh --config ~/.poshthemes/craver.omp.json)"' ~/.zshrc && \
   zsh && \
   source ~/.zshrc && \
-  echo
-  echo "---------- 3. 安装 Docker ----------"
-  echo
-  # sudo apt-get remove docker docker-engine docker.io containerd runc && \ 
-  sudo apt-get install \
-    ca-certificates \
-    curl \
-    gnupg \
-    lsb-release -y && \
-  sudo mkdir -p /etc/apt/keyrings && \
-  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg && \
-  echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null && \
-  sudo apt-get update -y && \
-  sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y && \
   echo
   echo "---------- 4. 运行 Docker-compose ----------"
   echo
