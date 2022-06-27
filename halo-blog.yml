@@ -1,0 +1,12 @@
+﻿# 文件位置：$HOME
+
+version: "3"
+services:
+  halo:
+    image: halohub/halo:latest
+    container_name: halo
+    ports:
+      - 8090:8090
+    volumes:
+      - ~/.halo:/root/.halo
+    restart: unless-stopped

@@ -1,0 +1,10 @@
+﻿# 文件位置：$HOME
+
+version: "3"
+services:
+  gtop:
+    image: aksakalli/gtop:latest
+    container_name: gtop
+    network_mode: "host"
+    pid: host
+    restart: unless-stopped
