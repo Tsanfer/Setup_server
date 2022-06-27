@@ -1,4 +1,4 @@
-﻿" 文件位置：$HOME
+" 文件位置：$HOME
 
 set cursorline
 set expandtab

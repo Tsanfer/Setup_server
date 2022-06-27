@@ -4,26 +4,26 @@
 
 github_download="github.com"
 github_raw="raw.githubusercontent.com"
-github_file="github.com"
 
 while true; do
   read -r -p "是否启用国内加速? [Y/n] " input
   case $input in
   [yY][eE][sS] | [yY])
-    git config --global url."https://hub.fastgit.xyz/".insteadOf https://github.com/
-    github_download="download.fastgit.org"
-    github_file="hub.fastgit.xyz"
-    github_raw="raw.fastgit.org"
-    # Install_docker && \
-    # wget -O ~/FastGithub.yaml https://hub.fastgit.xyz/dotnetcore/FastGithub/raw/master/docker-compose.yaml && \
-    # docker compose -f ~/FastGithub.yaml up -d
+    # git config --global url."https://hub.fastgit.xyz/".insteadOf https://github.com/
+    github_download="mirror.ghproxy.com/github.com"
+    github_raw="mirror.ghproxy.com/raw.githubusercontent.com"
+    # wget https://${github_download}/dotnetcore/FastGithub/releases/latest/download/fastgithub_linux-x64.zip -P ~ &&
+    #   unzip ~/fastgithub_linux-x64.zip
+    # sudo ~/fastgithub_linux-x64/fastgithub start &&
+    #   export http_proxy=127.0.0.1:38457
+    # export https_proxy=127.0.0.1:38457
+    # github_raw="raw.fastgit.org"
     break
     ;;
 
   [nN][oO] | [nN])
-    git config --global --remove-section url."https://hub.fastgit.xyz/"
+    # git config --global --remove-section url."https://hub.fastgit.xyz/"
     github_download="github.com"
-    github_file="github.com"
     github_raw="raw.githubusercontent.com"
     break
     ;;
@@ -52,8 +52,27 @@ if lsb_release -a | grep Ubuntu; then
   echo "---------- 2. 配置终端 ----------"
   echo
   chsh -s $(which zsh) &&
-    RUNZSH=no sh -c "$(curl -fsSL https://${github_raw}/ohmyzsh/ohmyzsh/master/tools/install.sh)" &&
-    git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions &&
+    if ! RUNZSH=no sh -c "$(curl -fsSL https://${github_raw}/ohmyzsh/ohmyzsh/master/tools/install.sh)"; then
+      while true; do
+        read -r -p "是否重新安装 oh-my-zsh? [Y/n] " input
+        case $input in
+        [yY][eE][sS] | [yY])
+          rm -rf ~/.oh-my-zsh ~/.poshthemes
+          RUNZSH=no sh -c "$(curl -fsSL https://${github_raw}/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+          break
+          ;;
+
+        [nN][oO] | [nN])
+          break
+          ;;
+
+        *)
+          echo "Invalid input..."
+          ;;
+        esac
+      done
+    fi
+  git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions &&
     git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting &&
     sed -i 's/^plugins=(/plugins=(\nzsh-autosuggestions\nzsh-syntax-highlighting\n/g' ~/.zshrc &&
     sudo wget https://${github_download}/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh &&
@@ -61,11 +80,11 @@ if lsb_release -a | grep Ubuntu; then
     mkdir ~/.poshthemes &&
     wget https://${github_download}/JanDeDobbeleer/oh-my-posh/releases/latest/download/themes.zip -O ~/.poshthemes/themes.zip &&
     unzip ~/.poshthemes/themes.zip -d ~/.poshthemes &&
-    chmod u+rw ~/.poshthemes/*.json &&
+    chmod u+rw ~/.poshthemes/*.omp.* &&
     rm ~/.poshthemes/themes.zip &&
     sed -i '$a\eval "$(oh-my-posh --init --shell zsh --config ~/.poshthemes/craver.omp.json)"' ~/.zshrc &&
-    zsh &&
-    wget -d ~ https://${github_file}/Tsanfer/Setup_server/raw/main/.vimrc &&
+    wget https://${github_raw}/Tsanfer/Setup_server/main/.vimrc -P ~ &&
+    zsh
     source ~/.zshrc &&
     echo
   echo "---------- 3. 安装 Docker ----------"
@@ -86,21 +105,25 @@ if lsb_release -a | grep Ubuntu; then
     echo
   echo "---------- 4. 运行 Docker-compose ----------"
   echo
-  docker compose up -d &&
-    PS3="选择需要安装的 Docker 容器: "
+  wget https://${github_raw}/Tsanfer/Setup_server/main/docker-compose.yml -P ~ &&
+    docker compose up -d &&
+    PS3='选择需要安装的 Docker 容器: '
   docker_list=("code-server" "halo-blog" "Quit")
   select compose in "${docker_list[@]}"; do
     case $compose in
     "code-server")
       read -p "设置密码: " password
       read -p "设置 sudo 密码: " sudo_password
-      echo "PASSWORD=${password}" >>~/$compose.env
+      echo "PASSWORD=$password" >>~/$compose.env
       echo "SUDO_PASSWORD=${sudo_password}" >>~/$compose.env
-      docker compose -f https://github.com/Tsanfer/Setup_server/raw/main/$compose.yml --env-file ~/$compose.env up -d
+      wget https://${github_file}/Tsanfer/Setup_server/raw/main/$compose.yml -P ~ &&
+        docker compose -f ~/$compose.yml --env-file ~/$compose.env up -d &&
+        break
       ;;
     "halo-blog")
-      docker compose -f https://github.com/Tsanfer/Setup_server/raw/main/$compose.yml --env-file ~/$compose.env up -d
-      break
+      wget https://${github_raw}/Tsanfer/Setup_server/main/$compose.yml -P ~ &&
+        docker compose -f ~/$compose.yml up -d &&
+        break
       ;;
     "Quit")
       echo "退出"
