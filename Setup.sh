@@ -33,7 +33,7 @@ do
       # github_raw="raw.fastgit.org"
       # github_download="download.fastgit.org"
       Install_docker && \
-      wget -O ~/FastGithub.yaml https://raw.fastgit.org/dotnetcore/FastGithub/raw/master/docker-compose.yaml && \
+      wget -O ~/FastGithub.yaml https://hub.fastgit.xyz/dotnetcore/FastGithub/raw/master/docker-compose.yaml && \
       docker compose -f ~/FastGithub.yaml up -d
       break
       ;;
