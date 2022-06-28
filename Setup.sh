@@ -117,15 +117,15 @@ if lsb_release -a | grep Ubuntu; then
     "code-server")
       read -p "设置密码: " password
       read -p "设置 sudo 密码: " sudo_password
-      echo "PASSWORD=$password" >>~/$compose.env
-      echo "SUDO_PASSWORD=$sudo_password" >>~/$compose.env
-      wget https://${github_raw}/Tsanfer/Setup_server/main/$compose.yml -P ~ &&
-        docker compose -f ~/$compose.yml --env-file ~/$compose.env up -d &&
+      echo "PASSWORD=$password" >>~/"$compose".env
+      echo "SUDO_PASSWORD=$sudo_password" >>~/"$compose".env
+      wget https://${github_raw}/Tsanfer/Setup_server/main/"$compose".yml -P ~ &&
+        docker compose -f ~/"$compose".yml --env-file ~/"$compose".env up -d &&
         break
       ;;
     "halo-blog")
-      wget https://${github_raw}/Tsanfer/Setup_server/main/$compose.yml -P ~ &&
-        docker compose -f ~/$compose.yml up -d &&
+      wget https://${github_raw}/Tsanfer/Setup_server/main/"$compose".yml -P ~ &&
+        docker compose -f ~/"$compose".yml up -d &&
         break
       ;;
     "Quit")
