@@ -6,41 +6,42 @@ github_repo="github.com"
 github_download="github.com"
 github_raw="raw.githubusercontent.com"
 
-while true; do
-  read -r -p "是否启用国内加速? [Y/n] " input
-  case $input in
-  [yY][eE][sS] | [yY])
-    # git config --global url."https://hub.fastgit.xyz/".insteadOf https://github.com/
-    github_repo="mirror.ghproxy.com/github.com"
-    github_download="mirror.ghproxy.com/github.com"
-    github_raw="mirror.ghproxy.com/raw.githubusercontent.com"
-    # wget https://${github_download}/dotnetcore/FastGithub/releases/latest/download/fastgithub_linux-x64.zip -P ~ &&
-    #   unzip ~/fastgithub_linux-x64.zip
-    # sudo ~/fastgithub_linux-x64/fastgithub start &&
-    #   export http_proxy=127.0.0.1:38457
-    # export https_proxy=127.0.0.1:38457
-    # github_raw="raw.fastgit.org"
-    break
-    ;;
+function github_proxy_set() {
+  while true; do
+    read -r -p "是否启用 Github 国内加速? [Y/n] " input
+    case $input in
+    [yY][eE][sS] | [yY])
+      # git config --global url."https://hub.fastgit.xyz/".insteadOf https://github.com/
+      github_repo="mirror.ghproxy.com/github.com"
+      github_download="mirror.ghproxy.com/github.com"
+      github_raw="mirror.ghproxy.com/raw.githubusercontent.com"
+      # wget https://${github_download}/dotnetcore/FastGithub/releases/latest/download/fastgithub_linux-x64.zip -P ~ &&
+      #   unzip ~/fastgithub_linux-x64.zip
+      # sudo ~/fastgithub_linux-x64/fastgithub start &&
+      #   export http_proxy=127.0.0.1:38457
+      # export https_proxy=127.0.0.1:38457
+      # github_raw="raw.fastgit.org"
+      break
+      ;;
 
-  [nN][oO] | [nN])
-    # git config --global --remove-section url."https://hub.fastgit.xyz/"
-    github_repo="github.com"
-    github_download="github.com"
-    github_raw="raw.githubusercontent.com"
-    break
-    ;;
+    [nN][oO] | [nN])
+      # git config --global --remove-section url."https://hub.fastgit.xyz/"
+      github_repo="github.com"
+      github_download="github.com"
+      github_raw="raw.githubusercontent.com"
+      break
+      ;;
 
-  *)
-    echo "Invalid input..."
-    ;;
-  esac
-done
+    *)
+      echo "Invalid input..."
+      ;;
+    esac
+  done
+}
 
-if lsb_release -a | grep Ubuntu; then
-
+function apt_update() {
   echo
-  echo "---------- 1. APT 更新 ----------"
+  echo "----------  APT 更新 ----------"
   echo
   sudo apt update -y &&
     sudo apt upgrade -y &&
@@ -49,10 +50,13 @@ if lsb_release -a | grep Ubuntu; then
       git clone https://${github_repo}/dylanaraps/neofetch &&
         make -C ~/neofetch install
     fi
-  neofetch &&
-    read -p "按回车键继续"
+  neofetch
+  read -p "按回车键继续"
+}
+
+function term_config() {
   echo
-  echo "---------- 2. 配置终端 ----------"
+  echo "---------- 配置终端 ----------"
   echo
   chsh -s $(which zsh) &&
     if ! RUNZSH=no sh -c "$(curl -fsSL https://${github_raw}/ohmyzsh/ohmyzsh/master/tools/install.sh)"; then
@@ -87,8 +91,11 @@ if lsb_release -a | grep Ubuntu; then
     rm ~/.poshthemes/themes.zip &&
     sed -i '$a\eval "$(oh-my-posh --init --shell zsh --config ~/.poshthemes/craver.omp.json)"' ~/.zshrc &&
     wget https://${github_raw}/Tsanfer/Setup_server/main/.vimrc -P ~
+}
+
+function docker_install() {
   echo
-  echo "---------- 3. 安装 Docker ----------"
+  echo "---------- 安装 Docker ----------"
   echo
   # sudo apt-get remove docker docker-engine docker.io containerd runc && \
   sudo apt-get install \
@@ -103,8 +110,11 @@ if lsb_release -a | grep Ubuntu; then
   $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list >/dev/null &&
     sudo apt-get update -y &&
     sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y
+}
+
+function docker_deploy() {
   echo
-  echo "---------- 4. 运行 Docker-compose ----------"
+  echo "---------- 运行 Docker-compose ----------"
   echo
   wget https://${github_raw}/Tsanfer/Setup_server/main/docker-compose.yml -P ~ &&
     docker compose up -d &&
@@ -133,10 +143,22 @@ if lsb_release -a | grep Ubuntu; then
     *) echo "错误选项：$REPLY" ;;
     esac
   done
-  docker ps &&
-    echo "Done!!!"
-  zsh
+  docker ps
+}
 
+github_proxy_set
+
+release_ver=$(awk '{print $2}' /etc/issue)
+
+if grep "Ubuntu" /etc/issue; then
+  apt_update && term_config
+  if (($(echo "$($release_ver | awk -F. '{printf "%s.%s\n",$1,$2}' | bc) >= 18.04" | bc))); then
+    docker_install && docker_deploy
+  else
+    echo "The Ubuntu version is lower than 18.04, can't install docker."
+  fi
+  echo "Done!!!"
+  zsh
 else
   echo "The linux version is not Ubuntu"
   return 1

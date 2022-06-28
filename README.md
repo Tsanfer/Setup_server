@@ -2,6 +2,8 @@
 Personal server setup files
 
 ## 一键脚本
-```sh
-bash -c "$(curl -fsSL https://mirror.ghproxy.com/raw.githubusercontent.com/Tsanfer/Setup_server/main/Setup.sh)"
-```
+`bash -c "$(curl -fsSL https://raw.githubusercontent.com/Tsanfer/Setup_server/main/Setup.sh)"`
+
+或
+
+`bash -c "$(curl -fsSL https://mirror.ghproxy.com/raw.githubusercontent.com/Tsanfer/Setup_server/main/Setup.sh)"`

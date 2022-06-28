@@ -3,8 +3,7 @@
 set cursorline
 set expandtab
 set hlsearch
-set mouse=a
+" set mouse=a
 set number
-set relativenumber
 set shiftwidth=2
 set softtabstop=2
