@@ -2,6 +2,7 @@
 # 更新日期：2022/06/23
 # 文件位置：$HOME
 
+github_repo="github.com"
 github_download="github.com"
 github_raw="raw.githubusercontent.com"
 
@@ -10,6 +11,7 @@ while true; do
   case $input in
   [yY][eE][sS] | [yY])
     # git config --global url."https://hub.fastgit.xyz/".insteadOf https://github.com/
+    github_repo="mirror.ghproxy.com/github.com"
     github_download="mirror.ghproxy.com/github.com"
     github_raw="mirror.ghproxy.com/raw.githubusercontent.com"
     # wget https://${github_download}/dotnetcore/FastGithub/releases/latest/download/fastgithub_linux-x64.zip -P ~ &&
@@ -23,6 +25,7 @@ while true; do
 
   [nN][oO] | [nN])
     # git config --global --remove-section url."https://hub.fastgit.xyz/"
+    github_repo="github.com"
     github_download="github.com"
     github_raw="raw.githubusercontent.com"
     break
@@ -43,7 +46,7 @@ if lsb_release -a | grep Ubuntu; then
     sudo apt upgrade -y &&
     sudo apt install zsh git vim unzip -y &&
     if ! sudo apt install neofetch -y; then
-      git clone https://github.com/dylanaraps/neofetch &&
+      git clone https://${github_repo}/dylanaraps/neofetch &&
         make -C ~/neofetch install
     fi
   neofetch &&
@@ -72,8 +75,8 @@ if lsb_release -a | grep Ubuntu; then
         esac
       done
     fi
-  git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions &&
-    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting &&
+  git clone https://${github_repo}/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions &&
+    git clone https://${github_repo}/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting &&
     sed -i 's/^plugins=(/plugins=(\nzsh-autosuggestions\nzsh-syntax-highlighting\n/g' ~/.zshrc &&
     sudo wget https://${github_download}/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh &&
     sudo chmod +x /usr/local/bin/oh-my-posh &&
@@ -85,7 +88,7 @@ if lsb_release -a | grep Ubuntu; then
     sed -i '$a\eval "$(oh-my-posh --init --shell zsh --config ~/.poshthemes/craver.omp.json)"' ~/.zshrc &&
     wget https://${github_raw}/Tsanfer/Setup_server/main/.vimrc -P ~ &&
     zsh
-    source ~/.zshrc &&
+  source ~/.zshrc &&
     echo
   echo "---------- 3. 安装 Docker ----------"
   echo
@@ -115,8 +118,8 @@ if lsb_release -a | grep Ubuntu; then
       read -p "设置密码: " password
       read -p "设置 sudo 密码: " sudo_password
       echo "PASSWORD=$password" >>~/$compose.env
-      echo "SUDO_PASSWORD=${sudo_password}" >>~/$compose.env
-      wget https://${github_file}/Tsanfer/Setup_server/raw/main/$compose.yml -P ~ &&
+      echo "SUDO_PASSWORD=$sudo_password" >>~/$compose.env
+      wget https://${github_raw}/Tsanfer/Setup_server/main/$compose.yml -P ~ &&
         docker compose -f ~/$compose.yml --env-file ~/$compose.env up -d &&
         break
       ;;
