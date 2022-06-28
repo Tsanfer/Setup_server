@@ -87,8 +87,7 @@ if lsb_release -a | grep Ubuntu; then
     rm ~/.poshthemes/themes.zip &&
     sed -i '$a\eval "$(oh-my-posh --init --shell zsh --config ~/.poshthemes/craver.omp.json)"' ~/.zshrc &&
     wget https://${github_raw}/Tsanfer/Setup_server/main/.vimrc -P ~ &&
-    zsh
-  source ~/.zshrc &&
+    source ~/.zshrc &&
     echo
   echo "---------- 3. 安装 Docker ----------"
   echo
@@ -109,23 +108,23 @@ if lsb_release -a | grep Ubuntu; then
   echo "---------- 4. 运行 Docker-compose ----------"
   echo
   wget https://${github_raw}/Tsanfer/Setup_server/main/docker-compose.yml -P ~ &&
-    docker compose up -d
-  PS3="选择需要安装的 Docker 容器: "
+    docker compose up -d &&
+    PS3="选择需要安装的 Docker 容器: "
   docker_list=("code-server" "halo-blog" "Quit")
   select compose in "${docker_list[@]}"; do
     case $compose in
     "code-server")
       read -p "设置密码: " password
       read -p "设置 sudo 密码: " sudo_password
-      echo "PASSWORD=$password" >>~/"$compose".env
-      echo "SUDO_PASSWORD=$sudo_password" >>~/"$compose".env
-      wget https://${github_raw}/Tsanfer/Setup_server/main/"$compose".yml -P ~ &&
-        docker compose -f ~/"$compose".yml --env-file ~/"$compose".env up -d &&
+      echo "PASSWORD=$password" >>~/$compose.env
+      echo "SUDO_PASSWORD=$sudo_password" >>~/$compose.env
+      wget https://${github_raw}/Tsanfer/Setup_server/main/$compose.yml -P ~ &&
+        docker compose -f ~/$compose.yml --env-file ~/$compose.env up -d &&
         break
       ;;
     "halo-blog")
-      wget https://${github_raw}/Tsanfer/Setup_server/main/"$compose".yml -P ~ &&
-        docker compose -f ~/"$compose".yml up -d &&
+      wget https://${github_raw}/Tsanfer/Setup_server/main/$compose.yml -P ~ &&
+        docker compose -f ~/$compose.yml up -d &&
         break
       ;;
     "Quit")
@@ -135,9 +134,10 @@ if lsb_release -a | grep Ubuntu; then
     *) echo "错误选项：$REPLY" ;;
     esac
   done
-
   docker ps &&
     echo "Done!!!"
+  zsh
+
 else
   echo "The linux version is not Ubuntu"
   return 1
