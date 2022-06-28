@@ -109,8 +109,8 @@ if lsb_release -a | grep Ubuntu; then
   echo "---------- 4. 运行 Docker-compose ----------"
   echo
   wget https://${github_raw}/Tsanfer/Setup_server/main/docker-compose.yml -P ~ &&
-    docker compose up -d &&
-    PS3='选择需要安装的 Docker 容器: '
+    docker compose up -d
+  PS3="选择需要安装的 Docker 容器: "
   docker_list=("code-server" "halo-blog" "Quit")
   select compose in "${docker_list[@]}"; do
     case $compose in
