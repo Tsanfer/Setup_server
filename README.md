@@ -1,5 +1,5 @@
 # Setup_server
-Personal setup server files
+Personal server setup files
 
 ## 一键脚本
 ```sh

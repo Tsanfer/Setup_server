@@ -87,7 +87,6 @@ if lsb_release -a | grep Ubuntu; then
     rm ~/.poshthemes/themes.zip &&
     sed -i '$a\eval "$(oh-my-posh --init --shell zsh --config ~/.poshthemes/craver.omp.json)"' ~/.zshrc &&
     wget https://${github_raw}/Tsanfer/Setup_server/main/.vimrc -P ~ &&
-    source ~/.zshrc &&
     echo
   echo "---------- 3. 安装 Docker ----------"
   echo
