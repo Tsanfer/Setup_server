@@ -86,8 +86,8 @@ if lsb_release -a | grep Ubuntu; then
     chmod u+rw ~/.poshthemes/*.omp.* &&
     rm ~/.poshthemes/themes.zip &&
     sed -i '$a\eval "$(oh-my-posh --init --shell zsh --config ~/.poshthemes/craver.omp.json)"' ~/.zshrc &&
-    wget https://${github_raw}/Tsanfer/Setup_server/main/.vimrc -P ~ &&
-    echo
+    wget https://${github_raw}/Tsanfer/Setup_server/main/.vimrc -P ~
+  echo
   echo "---------- 3. 安装 Docker ----------"
   echo
   # sudo apt-get remove docker docker-engine docker.io containerd runc && \
@@ -102,8 +102,8 @@ if lsb_release -a | grep Ubuntu; then
       "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
   $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list >/dev/null &&
     sudo apt-get update -y &&
-    sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y &&
-    echo
+    sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y
+  echo
   echo "---------- 4. 运行 Docker-compose ----------"
   echo
   wget https://${github_raw}/Tsanfer/Setup_server/main/docker-compose.yml -P ~ &&
