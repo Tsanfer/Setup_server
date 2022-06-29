@@ -6,4 +6,12 @@ Personal server setup files
 
 或
 
+`bash -c "$(wget https://raw.githubusercontent.com/Tsanfer/Setup_server/main/Setup.sh -O -)"`
+
+国内使用：
+
 `bash -c "$(curl -fsSL https://mirror.ghproxy.com/raw.githubusercontent.com/Tsanfer/Setup_server/main/Setup.sh)"`
+
+或
+
+`bash -c "$(wget https://mirror.ghproxy.com/raw.githubusercontent.com/Tsanfer/Setup_server/main/Setup.sh -O -)"`

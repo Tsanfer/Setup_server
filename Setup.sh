@@ -45,7 +45,7 @@ function app_install() {
   echo
   sudo apt update -y &&
     sudo apt upgrade -y &&
-    sudo apt install zsh git vim unzip bc curl -y &&
+    sudo apt install zsh git vim unzip bc curl wget -y &&
     wget https://${github_download}/ClementTsang/bottom/releases/download/0.6.8/bottom_0.6.8_amd64.deb -P ~ &&
     sudo dpkg -i ~/bottom_0.6.8_amd64.deb &&
     if ! sudo apt install neofetch -y; then
