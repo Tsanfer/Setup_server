@@ -41,12 +41,12 @@ function github_proxy_set() {
 
 function app_install() {
   echo
-  echo "----------   ----------"
+  echo "---------- 应用安装 ----------"
   echo
   sudo apt update -y &&
     sudo apt upgrade -y &&
-    sudo apt install zsh git vim unzip -y &&
-    wget https://mirror.ghproxy.com/github.com/ClementTsang/bottom/releases/download/0.6.8/bottom_0.6.8_amd64.deb -P ~ &&
+    sudo apt install zsh git vim unzip bc curl -y &&
+    wget https://${github_download}/ClementTsang/bottom/releases/download/0.6.8/bottom_0.6.8_amd64.deb -P ~ &&
     sudo dpkg -i ~/bottom_0.6.8_amd64.deb &&
     if ! sudo apt install neofetch -y; then
       git clone https://${github_repo}/dylanaraps/neofetch &&
@@ -107,8 +107,8 @@ function docker_deploy() {
   select compose in "${docker_list[@]}"; do
     case $compose in
     "code-server")
-      read -p "设置密码: " password
-      read -p "设置 sudo 密码: " sudo_password
+      read -s "设置密码: " password
+      read -s "设置 sudo 密码: " sudo_password
       echo "PASSWORD=$password" >>~/$compose.env
       echo "SUDO_PASSWORD=$sudo_password" >>~/$compose.env
       wget https://${github_raw}/Tsanfer/Setup_server/main/$compose.yml -P ~ &&
@@ -133,7 +133,7 @@ function docker_deploy() {
 github_proxy_set
 
 if grep "Ubuntu" /etc/issue; then
-  apt_update && term_config
+  app_install && term_config
   release_ver=$(awk '/Ubuntu/ {print $2}' /etc/issue | awk -F. '{printf "%s.%s\n",$1,$2}')
   if (($(echo "$(echo $release_ver | bc) >= 18.04" | bc))); then
     docker_install && docker_deploy
