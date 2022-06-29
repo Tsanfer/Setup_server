@@ -1,6 +1,5 @@
 #!/bin/bash
-# 更新日期：2022/06/23
-# 文件位置：$HOME
+# 文件位置：$HOME/Setup.sh
 
 github_repo="github.com"
 github_download="github.com"
@@ -54,7 +53,7 @@ function app_install() {
     fi
 
   neofetch
-  read -p "按回车键继续"
+  read -r -p "按回车键继续"
 }
 
 function term_config() {
@@ -94,6 +93,42 @@ function docker_install() {
   $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list >/dev/null &&
     sudo apt-get update -y &&
     sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y
+}
+
+function swap_set() {
+  free -m
+
+  while true; do
+    read -r -p "关闭还是启用 swap 功能? (Y:启用/n:关闭/q:退出): " input
+    case $input in
+    [yY])
+      read -r -p "设置 swap 大小 (单位 MB): " swap_size
+      let swap_size*=1024
+      dd if=/dev/zero of=/var/swap bs=1024 count=$swap_size
+      mkswap /var/swap
+      read -r -p "设置内存剩余小于百分之多少时，才启用 swap (单位 %): " swap_enable_threshold
+      sed -i "s/^vm.swappiness.*/vm.swappiness=$swap_enable_threshold/g" /etc/sysctl.conf
+      sysctl -p
+      swapon /var/swap
+      echo "/var/swap swap swap defaults 0 0" >>/etc/fstab
+      break
+      ;;
+
+    [nN])
+      swapoff /var/swap
+      sed -i '/^\/var\/swap/d' /etc/fstab
+      break
+      ;;
+
+    [qQ])
+      break
+      ;;
+
+    *)
+      echo "Invalid input..."
+      ;;
+    esac
+  done
 }
 
 function docker_deploy() {
@@ -136,7 +171,7 @@ if grep "Ubuntu" /etc/issue; then
   app_install && term_config
   release_ver=$(awk '/Ubuntu/ {print $2}' /etc/issue | awk -F. '{printf "%s.%s\n",$1,$2}')
   if (($(echo "$(echo $release_ver | bc) >= 18.04" | bc))); then
-    docker_install && docker_deploy
+    swap_set && docker_install && docker_deploy
   else
     echo "The Ubuntu version is lower than 18.04, can't install docker."
   fi
