@@ -142,8 +142,8 @@ function docker_deploy() {
   select compose in "${docker_list[@]}"; do
     case $compose in
     "code-server")
-      read -s "设置密码: " password
-      read -s "设置 sudo 密码: " sudo_password
+      read -s -p "设置密码: " password
+      read -s -p "设置 sudo 密码: " sudo_password
       echo "PASSWORD=$password" >>~/$compose.env
       echo "SUDO_PASSWORD=$sudo_password" >>~/$compose.env
       wget https://${github_raw}/Tsanfer/Setup_server/main/$compose.yml -P ~ &&
