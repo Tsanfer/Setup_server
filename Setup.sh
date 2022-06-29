@@ -39,17 +39,20 @@ function github_proxy_set() {
   done
 }
 
-function apt_update() {
+function app_install() {
   echo
-  echo "----------  APT 更新 ----------"
+  echo "----------   ----------"
   echo
   sudo apt update -y &&
     sudo apt upgrade -y &&
     sudo apt install zsh git vim unzip -y &&
+    wget https://mirror.ghproxy.com/github.com/ClementTsang/bottom/releases/download/0.6.8/bottom_0.6.8_amd64.deb -P ~ &&
+    sudo dpkg -i ~/bottom_0.6.8_amd64.deb &&
     if ! sudo apt install neofetch -y; then
       git clone https://${github_repo}/dylanaraps/neofetch &&
         make -C ~/neofetch install
     fi
+
   neofetch
   read -p "按回车键继续"
 }
@@ -59,27 +62,8 @@ function term_config() {
   echo "---------- 配置终端 ----------"
   echo
   chsh -s $(which zsh) &&
-    if ! RUNZSH=no sh -c "$(curl -fsSL https://${github_raw}/ohmyzsh/ohmyzsh/master/tools/install.sh)"; then
-      while true; do
-        read -r -p "是否重新安装 oh-my-zsh? [Y/n] " input
-        case $input in
-        [yY][eE][sS] | [yY])
-          rm -rf ~/.oh-my-zsh ~/.poshthemes
-          RUNZSH=no sh -c "$(curl -fsSL https://${github_raw}/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-          break
-          ;;
-
-        [nN][oO] | [nN])
-          break
-          ;;
-
-        *)
-          echo "Invalid input..."
-          ;;
-        esac
-      done
-    fi
-  git clone https://${github_repo}/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions &&
+    RUNZSH=no sh -c "$(curl -fsSL https://${github_raw}/ohmyzsh/ohmyzsh/master/tools/install.sh)" &&
+    git clone https://${github_repo}/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions &&
     git clone https://${github_repo}/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting &&
     sed -i 's/^plugins=(/plugins=(\nzsh-autosuggestions\nzsh-syntax-highlighting\n/g' ~/.zshrc &&
     sudo wget https://${github_download}/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh &&
@@ -117,7 +101,7 @@ function docker_deploy() {
   echo "---------- 运行 Docker-compose ----------"
   echo
   wget https://${github_raw}/Tsanfer/Setup_server/main/docker-compose.yml -P ~ &&
-    docker compose up -d &&
+    # docker compose up -d &&
     PS3="选择需要安装的 Docker 容器: "
   docker_list=("code-server" "halo-blog" "Quit")
   select compose in "${docker_list[@]}"; do
@@ -148,11 +132,10 @@ function docker_deploy() {
 
 github_proxy_set
 
-release_ver=$(awk '{print $2}' /etc/issue)
-
 if grep "Ubuntu" /etc/issue; then
   apt_update && term_config
-  if (($(echo "$($release_ver | awk -F. '{printf "%s.%s\n",$1,$2}' | bc) >= 18.04" | bc))); then
+  release_ver=$(awk '/Ubuntu/ {print $2}' /etc/issue | awk -F. '{printf "%s.%s\n",$1,$2}')
+  if (($(echo "$(echo $release_ver | bc) >= 18.04" | bc))); then
     docker_install && docker_deploy
   else
     echo "The Ubuntu version is lower than 18.04, can't install docker."
@@ -161,5 +144,4 @@ if grep "Ubuntu" /etc/issue; then
   zsh
 else
   echo "The linux version is not Ubuntu"
-  return 1
 fi

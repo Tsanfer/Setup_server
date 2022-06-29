@@ -6,5 +6,7 @@ services:
     image: aksakalli/gtop:latest
     container_name: gtop
     network_mode: "host"
-    pid: host
+    pid: "host"
+    stdin_open: true
+    tty: true
     restart: unless-stopped
