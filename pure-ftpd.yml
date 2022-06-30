@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 services:
   ftpd_server:
@@ -7,7 +7,7 @@ services:
     ports:
       - 21:21
       - 30000-30009:30000-30009
-    volumes: 
+    volumes:
       - ~/web_server/:/home/username/
       - ~/ftp_passwd:/etc/pure-ftpd/passwd
     environment:

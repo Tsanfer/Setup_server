@@ -21,7 +21,7 @@ while true; do
 
   [nN])
     swapoff -a
-		awk '/swap/ {print $1}' /etc/fstab | xargs rm
+    awk '/swap/ {print $1}' /etc/fstab | xargs rm
     sed -i '/swap/d' /etc/fstab
     break
     ;;
