@@ -110,7 +110,7 @@ function swap_set() {
   free -h
 
   while true; do
-    read -r -p "关闭还是启用 swap 功能? (Y:启用/n:关闭/q:退出): " input
+    read -r -p "关闭还是启用 swap 功能? (Y:启用/n:关闭/q:跳过): " input
     case $input in
     [yY])
       read -r -p "设置 swap 大小 (单位 MB): " swap_size
@@ -153,11 +153,12 @@ function docker_deploy() {
     wget https://${github_raw}/Tsanfer/Setup_server/main/docker-compose.yml -P ~ &&
       docker compose up -d &&
       PS3="选择需要安装的 Docker 容器: "
-    docker_list=("code-server" "Quit")
+    docker_list=("code-server" "aapanel" "Quit")
     select compose in "${docker_list[@]}"; do
       case $compose in
       "code-server")
         read -s -p "设置密码: " password
+        echo
         read -s -p "设置 sudo 密码: " sudo_password
         echo "PASSWORD=$password" >>~/$compose.env
         echo "SUDO_PASSWORD=$sudo_password" >>~/$compose.env
@@ -165,10 +166,16 @@ function docker_deploy() {
           docker compose -f ~/$compose.yml --env-file ~/$compose.env up -d &&
           break
         ;;
+      "aapanel")
+        wget https://${github_raw}/Tsanfer/Setup_server/main/$compose.yml -P ~ &&
+          docker compose -f ~/$compose.yml up -d &&
+          break
+        ;;
       "Quit")
         echo "退出"
         break
         ;;
+
       *) echo "错误选项：$REPLY" ;;
       esac
     done
@@ -178,26 +185,6 @@ function docker_deploy() {
   fi
 }
 
-function phpstudy_install() {
-  while true; do
-    read -r -p "是否安装小皮面板？[Y/n]: " input
-    case $input in
-    [yY])
-      wget -O install.sh https://download.xp.cn/install.sh && sudo bash install.sh
-      break
-      ;;
-
-    [nN])
-      break
-      ;;
-
-    *)
-      echo "错误选项：$REPLY"
-      ;;
-    esac
-  done
-}
-
 github_proxy_set
 
 grep "Ubuntu" /etc/issue
@@ -205,7 +192,6 @@ if [ $? -eq 0 ]; then
   app_install &&
     term_config &&
     swap_set &&
-    phpstudy_install &&
     docker_install &&
     docker_deploy &&
     echo "Done!!!"

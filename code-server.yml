@@ -13,7 +13,7 @@ services:
       - SUDO_PASSWORD #optional
       - DEFAULT_WORKSPACE=/config/workspace #optional
     volumes:
-      - /root/code-server/config:/config
+      - ~/code-server/config:/config
     ports:
       - 8443:8443
     restart: unless-stopped
