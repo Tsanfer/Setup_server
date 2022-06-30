@@ -1,0 +1,12 @@
+# 文件位置：$HOME
+
+version: "3"
+services:
+  nginx:
+    image: nginx
+    container_name: nginx
+    volumes:
+      - ~/web_server:/usr/share/nginx/html:ro
+    ports:
+      - 80:80
+    restart: always

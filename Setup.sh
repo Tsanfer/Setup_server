@@ -153,23 +153,30 @@ function docker_deploy() {
     wget https://${github_raw}/Tsanfer/Setup_server/main/docker-compose.yml -P ~ &&
       docker compose up -d &&
       PS3="选择需要安装的 Docker 容器: "
-    docker_list=("code-server" "aapanel" "Quit")
+    docker_list=("code-server" "nginx" "pure-ftpd" "Quit")
     select compose in "${docker_list[@]}"; do
       case $compose in
       "code-server")
         read -s -p "设置密码: " password
         echo
         read -s -p "设置 sudo 密码: " sudo_password
-        echo "PASSWORD=$password" >>~/$compose.env
+        echo "PASSWORD=$password" >~/$compose.env
         echo "SUDO_PASSWORD=$sudo_password" >>~/$compose.env
         wget https://${github_raw}/Tsanfer/Setup_server/main/$compose.yml -P ~ &&
-          docker compose -f ~/$compose.yml --env-file ~/$compose.env up -d &&
-          break
+          docker compose -f ~/$compose.yml --env-file ~/$compose.env up -d
         ;;
-      "aapanel")
+      "nginx")
         wget https://${github_raw}/Tsanfer/Setup_server/main/$compose.yml -P ~ &&
-          docker compose -f ~/$compose.yml up -d &&
-          break
+          docker compose -f ~/$compose.yml up -d
+        ;;
+      "pure-ftpd")
+        read -s -p "设置 ftp 用户名: " ftp_username
+        echo
+        read -s -p "设置 ftp 密码: " ftp_password
+        echo "FTP_USER_NAME=$ftp_username" >~/$compose.env
+        echo "FTP_USER_PASS=$ftp_password" >>~/$compose.env
+        wget https://${github_raw}/Tsanfer/Setup_server/main/$compose.yml -P ~ &&
+          docker compose -f ~/$compose.yml --env-file ~/$compose.env up -d
         ;;
       "Quit")
         echo "退出"
