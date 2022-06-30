@@ -1,7 +1,7 @@
 #!/bin/bash
 # file: $HOME/swap_set.sh
 
-free -m
+free -h
 
 while true; do
   read -r -p "关闭还是启用 swap 功能? (Y:启用/n:关闭/q:退出): " input
@@ -20,8 +20,9 @@ while true; do
     ;;
 
   [nN])
-    swapoff /var/swap
-    sed -i '/^\/var\/swap/d' /etc/fstab
+    swapoff -a
+		awk '/swap/ {print $1}' /etc/fstab | xargs rm
+    sed -i '/swap/d' /etc/fstab
     break
     ;;
 

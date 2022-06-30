@@ -130,8 +130,9 @@ function swap_set() {
       ;;
 
     [nN])
-      swapoff /var/swap
-      sed -i '/^\/var\/swap/d' /etc/fstab
+      swapoff -a
+      awk '/swap/ {print $1}' /etc/fstab | xargs rm
+      sed -i '/swap/d' /etc/fstab
       break
       ;;
 
@@ -154,7 +155,7 @@ function docker_deploy() {
   docker -v
   if [ $? -eq 0 ]; then
     wget https://${github_raw}/Tsanfer/Setup_server/main/docker-compose.yml -P ~ &&
-      # docker compose up -d &&
+      docker compose up -d &&
       PS3="选择需要安装的 Docker 容器: "
     docker_list=("code-server" "Quit")
     select compose in "${docker_list[@]}"; do
