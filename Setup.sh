@@ -81,10 +81,10 @@ function docker_install() {
   echo
   echo "检查 Docker 状态..."
   docker -v
-  if (($? != 0)); then
+  if [ $? -eq 0 ]; then
     release_ver=$(awk '/Ubuntu/ {print $2}' /etc/issue | awk -F. '{printf "%s.%s\n",$1,$2}')
     echo "$(echo $release_ver | bc) >= 18.04" | bc
-    if (($? != 0)); then
+    if [ $? -eq 0 ]; then
       echo "安装 Docker 环境..."
       # sudo apt-get remove docker docker-engine docker.io containerd runc && \
       sudo apt-get install \
@@ -152,7 +152,7 @@ function docker_deploy() {
   echo
   echo "检查 Docker 状态..."
   docker -v
-  if (($? != 0)); then
+  if [ $? -eq 0 ]; then
     wget https://${github_raw}/Tsanfer/Setup_server/main/docker-compose.yml -P ~ &&
       # docker compose up -d &&
       PS3="选择需要安装的 Docker 容器: "
@@ -207,7 +207,6 @@ grep "Ubuntu" /etc/issue
 if [ $? -eq 0 ]; then
   app_install &&
     term_config &&
-    phpstudy_install &&
     swap_set
   phpstudy_install || docker_install
   docker_deploy
