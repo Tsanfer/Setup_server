@@ -77,37 +77,33 @@ function term_config() {
 
 function docker_install() {
   echo
-  echo "---------- 安装 Docker ----------"
+  echo "---------- 安装/更新 Docker ----------"
   echo
-  echo "检查 Docker 状态..."
-  docker -v
+  release_ver=$(awk '/Ubuntu/ {print $2}' /etc/issue | awk -F. '{printf "%s.%s\n",$1,$2}')
+  echo "$(echo $release_ver | bc) >= 18.04" | bc
   if [ $? -eq 0 ]; then
-    release_ver=$(awk '/Ubuntu/ {print $2}' /etc/issue | awk -F. '{printf "%s.%s\n",$1,$2}')
-    echo "$(echo $release_ver | bc) >= 18.04" | bc
+    echo "安装/更新 Docker 环境..."
+    docker -v
     if [ $? -eq 0 ]; then
-      echo "安装 Docker 环境..."
-      # sudo apt-get remove docker docker-engine docker.io containerd runc && \
-      sudo apt-get install \
-        ca-certificates \
-        curl \
-        gnupg \
-        lsb-release -y &&
-        sudo mkdir -p /etc/apt/keyrings &&
-        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg &&
-        echo \
-          "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list >/dev/null &&
-        sudo apt-get update -y &&
-        sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y
-      echo "安装docker环境...安装完成!"
-      docker_install && docker_deploy
-    else
-      echo "The Ubuntu version is lower than 18.04, can't install docker."
+      docker rm -f $(docker ps -aq)
     fi
+    # sudo apt-get remove docker docker-engine docker.io containerd runc && \
+    sudo apt-get install \
+      ca-certificates \
+      curl \
+      gnupg \
+      lsb-release -y &&
+      sudo mkdir -p /etc/apt/keyrings &&
+      curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg &&
+      echo \
+        "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list >/dev/null &&
+      sudo apt-get update -y &&
+      sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y
+    echo "安装/更新 docker 环境完成!"
   else
-    echo "检查到 Docker 已安装!"
+    echo "The Ubuntu version is lower than 18.04, can't install docker."
   fi
-
 }
 
 function swap_set() {
@@ -141,7 +137,7 @@ function swap_set() {
       ;;
 
     *)
-      echo "Invalid input..."
+      echo "错误选项：$REPLY"
       ;;
     esac
   done
@@ -196,7 +192,7 @@ function phpstudy_install() {
       ;;
 
     *)
-      echo "Invalid input..."
+      echo "错误选项：$REPLY"
       ;;
     esac
   done
@@ -208,10 +204,11 @@ grep "Ubuntu" /etc/issue
 if [ $? -eq 0 ]; then
   app_install &&
     term_config &&
-    swap_set
-  phpstudy_install || docker_install
-  docker_deploy
-  echo "Done!!!"
+    swap_set &&
+    phpstudy_install &&
+    docker_install &&
+    docker_deploy &&
+    echo "Done!!!"
   zsh
 else
   echo "The linux version is not Ubuntu"
