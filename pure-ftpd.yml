@@ -11,7 +11,7 @@ services:
       - ~/web_server/:/home/username/
       - ~/ftp_passwd:/etc/pure-ftpd/passwd
     environment:
-      - PUBLICHOST=tsanfer.com
+      # - PUBLICHOST=tsanfer.com
       - FTP_USER_NAME
       - FTP_USER_PASS
       - FTP_USER_HOME=/home/username

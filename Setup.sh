@@ -45,12 +45,25 @@ function app_install() {
   sudo apt update -y &&
     sudo apt upgrade -y &&
     sudo apt install zsh git vim unzip bc curl wget -y &&
+    btm --version
+  if [ $? -ne 0 ]; then
     wget https://${github_download}/ClementTsang/bottom/releases/download/0.6.8/bottom_0.6.8_amd64.deb -P ~ &&
-    sudo dpkg -i ~/bottom_0.6.8_amd64.deb &&
-    if ! sudo apt install neofetch -y; then
+      sudo dpkg -i ~/bottom_0.6.8_amd64.deb
+  else
+    echo "已安装 bottom"
+  fi
+
+  neofetch --version
+  if [ $? -ne 0 ]; then
+    sudo apt install neofetch -y
+    if [ $? -ne 0 ]; then
       git clone https://${github_repo}/dylanaraps/neofetch &&
         make -C ~/neofetch install
     fi
+  else
+    echo "已安装 neofetch"
+  fi
+
   neofetch
   read -r -p "按回车键继续"
 }
@@ -163,20 +176,22 @@ function docker_deploy() {
         echo "PASSWORD=$password" >~/$compose.env
         echo "SUDO_PASSWORD=$sudo_password" >>~/$compose.env
         wget https://${github_raw}/Tsanfer/Setup_server/main/$compose.yml -P ~ &&
-          docker compose -f ~/$compose.yml --env-file ~/$compose.env up -d
+          docker compose -f ~/$compose.yml --env-file ~/$compose.env up -d && clear
         ;;
       "nginx")
         wget https://${github_raw}/Tsanfer/Setup_server/main/$compose.yml -P ~ &&
-          docker compose -f ~/$compose.yml up -d
+          docker compose -f ~/$compose.yml up -d &&
+          clear
         ;;
       "pure-ftpd")
-        read -s -p "设置 ftp 用户名: " ftp_username
+        read -p "设置 ftp 用户名: " ftp_username
         echo
         read -s -p "设置 ftp 密码: " ftp_password
         echo "FTP_USER_NAME=$ftp_username" >~/$compose.env
         echo "FTP_USER_PASS=$ftp_password" >>~/$compose.env
         wget https://${github_raw}/Tsanfer/Setup_server/main/$compose.yml -P ~ &&
-          docker compose -f ~/$compose.yml --env-file ~/$compose.env up -d
+          docker compose -f ~/$compose.yml --env-file ~/$compose.env up -d &&
+          clear
         ;;
       "Quit")
         echo "退出"
