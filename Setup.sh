@@ -7,7 +7,7 @@ github_raw="raw.githubusercontent.com"
 
 function github_proxy_set() {
   while true; do
-    read -r -p "是否启用 Github 国内加速? [Y/n] " input
+    read -rp "是否启用 Github 国内加速? [Y/n] " input
     case $input in
     [yY])
       # git config --global url."https://hub.fastgit.xyz/".insteadOf https://github.com/
@@ -62,7 +62,7 @@ function app_install() {
   fi
 
   neofetch
-  read -r -p "按回车键继续"
+  read -rp "按回车键继续"
 }
 
 function term_config() {
@@ -89,7 +89,7 @@ function swap_set() {
   free -h
 
   while true; do
-    read -r -p "配置 swap 功能 (Y:覆盖/n:关闭/q:跳过): " input
+    read -rp "配置 swap 功能 (Y:覆盖/n:关闭/q:跳过): " input
     case $input in
     [yY])
       if ! swapoff -a; then
@@ -137,7 +137,7 @@ function docker_install() {
     echo "安装/更新 Docker 环境..."
     if docker -v; then
       echo "删除现有容器"
-      docker rm -f "$(docker ps -aq)"
+      docker rm -f "$(docker ps -q)"
     fi
     # sudo apt-get remove docker docker-engine docker.io containerd runc && \
     sudo apt-get install \
@@ -172,12 +172,11 @@ function docker_deploy() {
       for i in "${!docker_list[@]}"; do
         echo "$i. ${docker_list[$i]}"
       done
-      read -rp "选择需要安装的 Docker 容器 (q:退出): " input
+      read -r -p "选择需要安装的 Docker 容器序号 (q:退出): " input
       case $input in
       [0])
-        read -rps "设置密码: " password
-        echo
-        read -rps "设置 sudo 密码: " sudo_password
+        read -rsp "设置密码: " password
+        read -rsp "设置 sudo 密码: " sudo_password
         echo "PASSWORD=$password" >~/"${docker_list[$input]}".env
         echo "SUDO_PASSWORD=$sudo_password" >>~/"${docker_list[$input]}".env
         wget https://$github_raw/Tsanfer/Setup_server/main/"${docker_list[$input]}".yml -NP ~ &&
@@ -185,16 +184,15 @@ function docker_deploy() {
         ;;
       [1])
         wget https://$github_raw/Tsanfer/Setup_server/main/"${docker_list[$input]}".yml -NP ~ &&
-          docker compose -f ~/"${docker_list[$input]}" up -d
+          docker compose -f ~/"${docker_list[$input]}".yml up -d
         ;;
       [2])
         read -rp "设置 ftp 用户名: " ftp_username
-        echo
-        read -rps "设置 ftp 密码: " ftp_password
+        read -rsp "设置 ftp 密码: " ftp_password
         echo "FTP_USER_NAME=$ftp_username" >~/"${docker_list[$input]}".env
         echo "FTP_USER_PASS=$ftp_password" >>~/"${docker_list[$input]}".env
         wget https://$github_raw/Tsanfer/Setup_server/main/"${docker_list[$input]}".yml -NP ~ &&
-          docker compose -f ~/"${docker_list[$input]}".yml --env-file ~/"${docker_list[$input]}"e.env up -d
+          docker compose -f ~/"${docker_list[$input]}".yml --env-file ~/"${docker_list[$input]}".env up -d
         ;;
       [3])
         wget https://$github_raw/Tsanfer/Setup_server/main/"${docker_list[$input]}".yml -NP ~ &&
