@@ -1,0 +1,11 @@
+# 文件位置：$HOME
+
+version: "3"
+services:
+  object_detection:
+    image: tsanfer/web_object_detection
+    container_name: object_detection
+    ports:
+      - 4000:4000
+      - 8000:8000
+    restart: unless-stopped

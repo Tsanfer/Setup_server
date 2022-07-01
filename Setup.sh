@@ -167,12 +167,12 @@ function docker_deploy() {
     wget https://$github_raw/Tsanfer/Setup_server/main/docker-compose.yml -NP ~ &&
       docker compose up -d &&
       echo "安装 Docker 容器"
-    docker_list=("code-server" "nginx" "pure-ftpd")
+    docker_list=("code-server" "nginx" "pure-ftpd" "web_object_detection")
     while true; do
       for i in "${!docker_list[@]}"; do
         echo "$i. ${docker_list[$i]}"
       done
-      read -rp "选择需要安装的 Docker 容器（q:退出）: " input
+      read -rp "选择需要安装的 Docker 容器 (q:退出): " input
       case $input in
       [0])
         read -rps "设置密码: " password
@@ -195,6 +195,10 @@ function docker_deploy() {
         echo "FTP_USER_PASS=$ftp_password" >>~/"${docker_list[$input]}".env
         wget https://$github_raw/Tsanfer/Setup_server/main/"${docker_list[$input]}".yml -NP ~ &&
           docker compose -f ~/"${docker_list[$input]}".yml --env-file ~/"${docker_list[$input]}"e.env up -d
+        ;;
+      [3])
+        wget https://$github_raw/Tsanfer/Setup_server/main/"${docker_list[$input]}".yml -NP ~ &&
+          docker compose -f ~/"${docker_list[$input]}".yml up -d
         ;;
       [qQ])
         break
