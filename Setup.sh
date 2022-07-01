@@ -92,7 +92,9 @@ function swap_set() {
     read -r -p "配置 swap 功能 (Y:覆盖/n:关闭/q:跳过): " input
     case $input in
     [yY])
-      swapoff -a
+      if ! swapoff -a; then
+        echo "释放 swap 内存失败，请尝试预留更多物理内存后重试"
+      fi
       awk '/swap/ {print $1}' /etc/fstab | xargs rm
       sed -i '/swap/d' /etc/fstab
       read -rp "设置 swap 大小 (单位 MB): " swap_size
@@ -134,6 +136,7 @@ function docker_install() {
   if echo "$(echo "$release_ver" | bc) >= 18.04" | bc; then
     echo "安装/更新 Docker 环境..."
     if docker -v; then
+      echo "删除现有容器"
       docker rm -f "$(docker ps -aq)"
     fi
     # sudo apt-get remove docker docker-engine docker.io containerd runc && \
@@ -226,6 +229,9 @@ function apt_clean() {
       ;;
     esac
   done
+}
+
+function sys_reboot() {
   while true; do
     read -rp "是否重启系统？(Y/n): " input
     case $input in
@@ -251,7 +257,8 @@ if grep "Ubuntu" /etc/issue; then
     swap_set &&
     docker_install &&
     docker_deploy &&
-    apt_clean
+    apt_clean &&
+    sys_reboot
   echo "Done!!!"
   zsh
 else
