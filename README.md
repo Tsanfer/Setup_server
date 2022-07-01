@@ -1,6 +1,24 @@
-# Setup_server
+# 个人 Ubuntu 服务器自动初始化脚本
 
-Personal server setup files
+> Linux 发行版：Ubuntu
+
+> 安装时，可选择国内 Github 镜像加速
+
+- APT 软件更新安装
+  - `bottom`：监控系统资源使用情况
+  - `neofetch`：查看系统信息
+- 配置终端
+  - `Oh-my-zsh` 及插件安装
+  - `Oh-my-posh` 安装
+- 配置 swap 内存
+- Docker 安装/更新
+- 从 Docker compose 部署 docker 容器
+  - `portainer_agent`: Docker 多容器管理客户端
+  - `code-server`: 在线 Web IDE
+  - `nginx: Web` 服务器
+  - `pure-ftpd`: FTP 服务器
+  - `web_object_detection`: 在线 web 目标识别
+- 清理 APT 空间，重启系统
 
 ## 一键脚本
 

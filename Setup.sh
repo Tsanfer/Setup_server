@@ -36,7 +36,7 @@ function github_proxy_set() {
   done
 }
 
-# 应用安装
+# APT 软件更新安装
 function app_install() {
   echo
   echo "---------- 应用安装 ----------"
@@ -81,8 +81,9 @@ function term_config() {
     unzip ~/.poshthemes/themes.zip -d ~/.poshthemes &&
     chmod u+rw ~/.poshthemes/*.omp.* &&
     rm ~/.poshthemes/themes.zip &&
-    sed -i '$a\eval "$(oh-my-posh --init --shell zsh --config ~/.poshthemes/craver.omp.json)"' ~/.zshrc # 每次进入 zsh 时，自动打开 oh-my-posh 主体
-  wget https://$github_raw/Tsanfer/Setup_server/main/.vimrc -NP ~                                       # 下载 vim 自定义文件
+    sed -i '$a\eval "$(oh-my-posh --init --shell zsh --config ~/.poshthemes/craver.omp.json)"' ~/.zshrc # 每次进入 zsh 时，自动打开 oh-my-posh 主题
+
+  wget https://$github_raw/Tsanfer/Setup_server/main/.vimrc -NP ~ # 下载 vim 自定义配置文件
 }
 
 # 设置 swap 内存
@@ -111,6 +112,7 @@ function swap_set() {
         echo "释放 swap 内存失败，请尝试预留更多物理内存后重试"
       fi
       ;;
+
     [nN])
       if swapoff -a; then                             # 关闭所有 swap 内存
         awk '/swap/ {print $1}' /etc/fstab | xargs rm # 删除原有 swap 文件
@@ -120,9 +122,11 @@ function swap_set() {
       fi
       break
       ;;
+
     [qQ])
       break
       ;;
+
     *)
       echo "错误选项：$REPLY"
       ;;
@@ -138,10 +142,12 @@ function docker_install() {
   release_ver=$(awk '/Ubuntu/ {print $2}' /etc/issue | awk -F. '{printf "%s.%s\n",$1,$2}') # 获得 Ubuntu 版本号（如：20.04）
   if echo "$(echo "$release_ver" | bc) >= 18.04" | bc; then                                # 如果版本符合要求
     echo "安装/更新 Docker 环境..."
+
     if docker -v; then
       echo "删除现有容器"
       docker rm -f "$(docker ps -q)"
     fi
+
     # sudo apt-get remove docker docker-engine docker.io containerd runc && \
     sudo apt-get install \
       ca-certificates \
@@ -170,15 +176,17 @@ function docker_deploy() {
   if docker -v; then
     wget https://$github_raw/Tsanfer/Setup_server/main/docker-compose.yml -NP ~ && # 下载默认 docker compose 文件
       docker compose up -d &&                                                      # 从默认文件部署 docker 容器
-      echo "安装 Docker 容器"
+      echo "构建 Docker 容器"
     docker_list=("code-server" "nginx" "pure-ftpd" "web_object_detection") # 可安装容器列表
     while true; do
+
       for i in "${!docker_list[@]}"; do
         echo "$i. ${docker_list[$i]}" # 显示可安装容器列表
       done
+
       read -r -p "选择需要安装的 Docker 容器序号 (q:退出): " input
       case $input in
-      [0])
+      [0]) # code-server: 在线 Web IDE
         read -rsp "设置密码: " password
         read -rsp "设置 sudo 密码: " sudo_password
         echo "PASSWORD=$password" >~/"${docker_list[$input]}".env # 将输入的密码，保存至本地环境变量文件
@@ -186,11 +194,13 @@ function docker_deploy() {
         wget https://$github_raw/Tsanfer/Setup_server/main/"${docker_list[$input]}".yml -NP ~ &&           # 下载选择的 docker compose 文件
           docker compose -f ~/"${docker_list[$input]}".yml --env-file ~/"${docker_list[$input]}".env up -d # 使用指定的 docker compose 文件和环境变量文件，构建 docker 容器
         ;;
-      [1])
+
+      [1]) # nginx: Web 服务器
         wget https://$github_raw/Tsanfer/Setup_server/main/"${docker_list[$input]}".yml -NP ~ &&
           docker compose -f ~/"${docker_list[$input]}".yml up -d # 使用指定的 docker compose 文件，构建 docker 容器
         ;;
-      [2])
+
+      [2]) # pure-ftpd: FTP 服务器
         read -rp "设置 ftp 用户名: " ftp_username
         read -rsp "设置 ftp 密码: " ftp_password
         echo "FTP_USER_NAME=$ftp_username" >~/"${docker_list[$input]}".env
@@ -198,13 +208,16 @@ function docker_deploy() {
         wget https://$github_raw/Tsanfer/Setup_server/main/"${docker_list[$input]}".yml -NP ~ &&
           docker compose -f ~/"${docker_list[$input]}".yml --env-file ~/"${docker_list[$input]}".env up -d
         ;;
-      [3])
+
+      [3]) # web_object_detection: 在线 web 目标识别
         wget https://$github_raw/Tsanfer/Setup_server/main/"${docker_list[$input]}".yml -NP ~ &&
           docker compose -f ~/"${docker_list[$input]}".yml up -d
         ;;
+
       [qQ])
         break
         ;;
+
       *)
         echo "错误选项：$REPLY"
         ;;
@@ -228,9 +241,11 @@ function apt_clean() {
         sudo apt autoremove -y # 删除不再需要的依赖软件包
       break
       ;;
+
     [nN])
       break
       ;;
+
     *)
       echo "错误选项：$REPLY"
       ;;
@@ -247,9 +262,11 @@ function sys_reboot() {
       reboot # 重启系统
       break
       ;;
+
     [nN])
       break
       ;;
+
     *)
       echo "错误选项：$REPLY"
       ;;
