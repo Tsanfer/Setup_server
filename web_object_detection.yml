@@ -1,4 +1,5 @@
-# 文件位置：$HOME
+# 在线目标识别
+# 文件位置：$HOME/web_object_detection.yml
 
 version: "3"
 services:
@@ -6,6 +7,6 @@ services:
     image: tsanfer/web_object_detection
     container_name: object_detection
     ports:
-      - 4000:4000
-      - 8000:8000
+      - 4000:4000 # Web 前端
+      - 8000:8000 # 后端
     restart: unless-stopped

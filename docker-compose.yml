@@ -1,8 +1,9 @@
-﻿# 文件位置：$HOME
+﻿# 服务器初始化 Docker
+# 文件位置：$HOME/docker-compose.yml
 
 version: "3"
 services:
-  portainer_agent:
+  portainer_agent: # Docker 多容器管理客户端
     image: portainer/agent:latest
     container_name: portainer_agent
     volumes:

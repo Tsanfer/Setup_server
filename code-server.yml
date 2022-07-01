@@ -1,4 +1,5 @@
-﻿# 文件位置：$HOME
+﻿# 在线 Web IDE
+# 文件位置：$HOME/code-server.yml
 
 version: "3"
 services:
@@ -6,14 +7,14 @@ services:
     image: lscr.io/linuxserver/code-server:latest
     container_name: code-server
     environment:
-      - PUID=1000
-      - PGID=1000
+      - PUID=1000 # 映射用户权限
+      - PGID=1000 # 映射用户权限
       - TZ=America/Los_Angeles
-      - PASSWORD #optional
-      - SUDO_PASSWORD #optional
+      - PASSWORD # optional
+      - SUDO_PASSWORD # optional
       - DEFAULT_WORKSPACE=/config/workspace #optional
     volumes:
       - ~/code-server/config:/config
     ports:
-      - 8443:8443
+      - 8443:8443 # Web 端口
     restart: unless-stopped

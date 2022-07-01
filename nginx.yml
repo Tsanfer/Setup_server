@@ -1,12 +1,13 @@
-# 文件位置：$HOME
+# Web 服务器
+# 文件位置：$HOME/nginx.yml
 
 version: "3"
 services:
-  nginx:
+  nginx: 
     image: nginx
     container_name: nginx
     volumes:
-      - ~/web_server:/usr/share/nginx/html:ro
+      - ~/web_server:/usr/share/nginx/html:ro # 网站根目录
     ports:
-      - 80:80
+      - 80:80 # Web 端口
     restart: always

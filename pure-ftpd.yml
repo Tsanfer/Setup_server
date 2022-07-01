@@ -1,4 +1,5 @@
-# 文件位置：$HOME
+# FTP 服务器
+# 文件位置：$HOME/pure-ftpd.yml
 
 version: "3"
 
@@ -7,14 +8,14 @@ services:
     image: stilliard/pure-ftpd
     container_name: pure-ftpd
     ports:
-      - 21:21
-      - 30000-30009:30000-30009
+      - 21:21 # FTP 主动端口
+      - 30000-30009:30000-30009 # FTP 被动端口
     volumes:
-      - ~/web_server/:/home/username/
-      - ~/ftp_passwd:/etc/pure-ftpd/passwd
+      - ~/web_server/:/home/username/ # FTP 服务器根目录映射
+      - ~/ftp_passwd:/etc/pure-ftpd/passwd # FTP 密码（已加密）
     environment:
       # - PUBLICHOST=tsanfer.com
       - FTP_USER_NAME
       - FTP_USER_PASS
-      - FTP_USER_HOME=/home/username
+      - FTP_USER_HOME=/home/username # FTP 服务器根目录，在容器内的位置
     restart: always
