@@ -95,11 +95,12 @@ function swap_set() {
       swapoff -a
       awk '/swap/ {print $1}' /etc/fstab | xargs rm
       sed -i '/swap/d' /etc/fstab
-      read -r -p "设置 swap 大小 (单位 MB): " swap_size
+      read -rp "设置 swap 大小 (单位 MB): " swap_size
       ((swap_size *= 1024))
       dd if=/dev/zero of=/var/swap bs=1024 count="$swap_size"
       mkswap /var/swap
-      read -r -p "设置内存剩余小于百分之多少时，才启用 swap (单位 %): " swap_enable_threshold
+      chmod 600 /var/swap
+      read -rp "设置内存剩余小于百分之多少时，才启用 swap (单位 %): " swap_enable_threshold
       sed -i "s/^vm.swappiness.*/vm.swappiness=$swap_enable_threshold/g" /etc/sysctl.conf
       sysctl -p
       swapon /var/swap
@@ -206,6 +207,41 @@ function docker_deploy() {
   fi
 }
 
+function apt_clean() {
+  while true; do
+    read -rp "是否清理 APT 空间？(Y/n): " input
+    case $input in
+    [yY])
+      sudo apt clean -y &&
+        sudo apt purge -y &&
+        sudo apt autoremove -y
+      break
+      ;;
+    [nN])
+      break
+      ;;
+    *)
+      echo "错误选项：$REPLY"
+      ;;
+    esac
+  done
+  while true; do
+    read -rp "是否重启系统？(Y/n): " input
+    case $input in
+    [yY])
+      reboot
+      break
+      ;;
+    [nN])
+      break
+      ;;
+    *)
+      echo "错误选项：$REPLY"
+      ;;
+    esac
+  done
+}
+
 github_proxy_set
 
 if grep "Ubuntu" /etc/issue; then
@@ -214,7 +250,8 @@ if grep "Ubuntu" /etc/issue; then
     swap_set &&
     docker_install &&
     docker_deploy &&
-    echo "Done!!!"
+    apt_clean
+  echo "Done!!!"
   zsh
 else
   echo "linux 系统不是 Ubuntu"
