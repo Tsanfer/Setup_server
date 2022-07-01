@@ -201,7 +201,8 @@ function docker_deploy() {
         ;;
       esac
     done
-    docker ps
+    docker images -a
+    docker ps -a
   else
     echo "Docker 未安装!"
   fi
