@@ -98,8 +98,7 @@ function swap_set() {
         awk '/swap/ {print $1}' /etc/fstab | xargs rm # 删除原有 swap 文件
         sed -i '/swap/d' /etc/fstab                   # 删除原有 swap 在 /etc/fstab 中的配置信息
         read -rp "设置 swap 大小 (单位 MB): " swap_size
-        ((swap_size *= 1024))                                   # 从 B 转换为 KB
-        dd if=/dev/zero of=/var/swap bs=1024 count="$swap_size" # 生成新的 swap 文件（单位：Byte），大小 = bs*count
+        dd if=/dev/zero of=/var/swap bs=1M count="$swap_size" # 生成新的 swap 文件（单位：Byte），大小 = bs*count
         chmod 600 /var/swap                                     # 更改 swap 文件权限，防止任意修改
         mkswap /var/swap                                        # 使用新的 swap 文件
         read -rp "设置内存剩余小于百分之多少时，才启用 swap (单位 %): " swap_enable_threshold
