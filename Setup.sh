@@ -99,8 +99,8 @@ function swap_set() {
         sed -i '/swap/d' /etc/fstab                   # 删除原有 swap 在 /etc/fstab 中的配置信息
         read -rp "设置 swap 大小 (单位 MB): " swap_size
         dd if=/dev/zero of=/var/swap bs=1M count="$swap_size" # 生成新的 swap 文件（单位：Byte），大小 = bs*count
-        chmod 600 /var/swap                                     # 更改 swap 文件权限，防止任意修改
-        mkswap /var/swap                                        # 使用新的 swap 文件
+        chmod 600 /var/swap                                   # 更改 swap 文件权限，防止任意修改
+        mkswap /var/swap                                      # 使用新的 swap 文件
         read -rp "设置内存剩余小于百分之多少时，才启用 swap (单位 %): " swap_enable_threshold
         sed -i "s/^vm.swappiness.*/vm.swappiness=$swap_enable_threshold/g" /etc/sysctl.conf # 替换旧有的阈值
         sysctl -p                                                                           # 重新读取 swap 配置
@@ -178,6 +178,8 @@ function docker_deploy() {
       echo "构建 Docker 容器"
     docker_list=("code-server" "nginx" "pure-ftpd" "web_object_detection") # 可安装容器列表
     while true; do
+      echo "已安装的 Docker 容器: "
+      docker ps -a
 
       for i in "${!docker_list[@]}"; do
         echo "$i. ${docker_list[$i]}" # 显示可安装容器列表
