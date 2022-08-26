@@ -213,7 +213,7 @@ function docker_deploy() {
         
         [4]) # zfile: 在线云盘
           wget https://$github_raw/Tsanfer/Setup_server/main/"${docker_list[$input]}".yml -NP ~ &&
-          curl -o /root/application.properties https://c.jun6.net/ZFILE/application.properties &&
+          curl -o ~/application.properties https://c.jun6.net/ZFILE/application.properties &&
           docker compose -f ~/"${docker_list[$input]}".yml up -d
         ;;
         

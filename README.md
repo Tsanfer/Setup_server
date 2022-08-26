@@ -15,9 +15,10 @@
 - 从 Docker compose 部署 docker 容器
   - `portainer_agent`: Docker 多容器管理客户端
   - `code-server`: 在线 Web IDE
-  - `nginx: Web` 服务器
+  - `nginx`: Web 服务器
   - `pure-ftpd`: FTP 服务器
   - `web_object_detection`: 在线 web 目标识别
+  - `zfile`: 在线网盘
 - 清理 APT 空间，重启系统
 
 ## 一键脚本
