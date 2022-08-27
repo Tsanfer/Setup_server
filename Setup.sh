@@ -72,8 +72,8 @@ function term_config() {
   echo
   chsh -s "$(which zsh)" &&                                                                                                                      # 设置 zsh 为默认 shell
   RUNZSH=no sh -c "$(curl -fsSL https://$github_raw/ohmyzsh/ohmyzsh/master/tools/install.sh)" &&                                               # 使用 oh-my-zsh 官方一键安装脚本
-  git clone https://$github_repo/zsh-users/zsh-autosuggestions "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}"/plugins/zsh-autosuggestions &&             # 下载 zsh 自动建议插件
-  git clone https://$github_repo/zsh-users/zsh-syntax-highlighting.git "${ZSH_CUSTOM:-~/.oh-my-zsh/custom}"/plugins/zsh-syntax-highlighting && # 下载 zsh 语法高亮插件
+  git clone https://$github_repo/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions &&             # 下载 zsh 自动建议插件
+  git clone https://$github_repo/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting && # 下载 zsh 语法高亮插件
   sed -i 's/^plugins=(/plugins=(\nzsh-autosuggestions\nzsh-syntax-highlighting\n/g' ~/.zshrc &&                                                # 启用 zsh 插件
   sudo wget https://$github_repo/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh &&           # 下载 oh-my-posh
   sudo chmod +x /usr/local/bin/oh-my-posh &&
