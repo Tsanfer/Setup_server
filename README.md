@@ -19,6 +19,8 @@
   - `pure-ftpd`: FTP 服务器
   - `web_object_detection`: 在线 web 目标识别
   - `zfile`: 在线网盘
+  - `subconverter`: 订阅转换后端
+  - `subweb`: 订阅转换前端
 - 清理 APT 空间，重启系统
 
 ## 一键脚本

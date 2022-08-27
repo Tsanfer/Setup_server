@@ -160,6 +160,9 @@ function docker_install() {
     sudo apt-get update -y &&                                                           # 更新 apt 仓库
     sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y # 安装 docker 相关软件
     echo "安装/更新 docker 环境完成!"
+    echo "安装默认 docker compose"
+    wget https://$github_raw/Tsanfer/Setup_server/main/docker-compose.yml -NP ~ && # 下载默认 docker compose 文件
+    docker compose up -d                                                      # 从默认文件部署 docker 容器
   else
     echo "Ubuntu 版本低于 18.04 无法安装 Docker"
   fi
@@ -172,8 +175,6 @@ function docker_deploy() {
   echo
   echo "检查 Docker 状态..."
   if docker -v; then
-    wget https://$github_raw/Tsanfer/Setup_server/main/docker-compose.yml -NP ~ && # 下载默认 docker compose 文件
-    docker compose up -d &&                                                      # 从默认文件部署 docker 容器
     echo "构建 Docker 容器"
     while true; do
       echo "已安装的 Docker 容器: "
@@ -226,7 +227,7 @@ function docker_deploy() {
         ;;
 
         [6]) # subweb: 订阅转换前端
-          git clone https://github.com/CareyWang/sub-web ~ &&
+          git clone https://github.com/CareyWang/sub-web ~/subweb &&
           sed -i 's/^VUE_APP_SUBCONVERTER_DEFAULT_BACKEND.*/VUE_APP_SUBCONVERTER_DEFAULT_BACKEND = "http:\/\/api.tsanfer.com:25500"/g' ~/sub-web/.env # 替换旧有的后端地址
           wget https://$github_raw/Tsanfer/Setup_server/main/"${docker_list[$input]}".yml -NP ~ &&
           docker compose -f ~/"${docker_list[$input]}".yml up -d
