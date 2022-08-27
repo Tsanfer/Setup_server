@@ -4,6 +4,9 @@
 github_repo="github.com"               # 默认 github 仓库域名
 github_raw="raw.githubusercontent.com" # 默认 github raw 域名
 
+script_list=("app_update_install" "term_config" "swap_set" "docker_install" "docker_deploy" "apt_clean" "sys_reboot" "docker_update")
+docker_list=("code-server" "nginx" "pure-ftpd" "web_object_detection" "zfile" "subconverter") # 可安装容器列表
+
 # 设置 github 镜像域名
 function github_proxy_set() {
   while true; do
@@ -35,7 +38,7 @@ function github_proxy_set() {
 }
 
 # APT 软件更新安装
-function app_install() {
+function app_update_install() {
   echo
   echo "---------- 应用安装 ----------"
   echo
@@ -172,7 +175,6 @@ function docker_deploy() {
     wget https://$github_raw/Tsanfer/Setup_server/main/docker-compose.yml -NP ~ && # 下载默认 docker compose 文件
     docker compose up -d &&                                                      # 从默认文件部署 docker 容器
     echo "构建 Docker 容器"
-    docker_list=("code-server" "nginx" "pure-ftpd" "web_object_detection" "zfile") # 可安装容器列表
     while true; do
       echo "已安装的 Docker 容器: "
       docker ps -a
@@ -215,6 +217,12 @@ function docker_deploy() {
           wget https://$github_raw/Tsanfer/Setup_server/main/"${docker_list[$input]}".yml -NP ~ &&
           curl -o ~/application.properties https://c.jun6.net/ZFILE/application.properties &&
           docker compose -f ~/"${docker_list[$input]}".yml up -d
+        ;;
+
+        [5]) # subconverter: 订阅转换后端
+          wget https://$github_raw/Tsanfer/Setup_server/main/"${docker_list[$input]}".yml -NP ~ &&
+          docker compose -f ~/"${docker_list[$input]}".yml up -d &&
+          curl http://localhost:25500/version
         ;;
         
         [qQ]) break ;;
@@ -276,18 +284,16 @@ function docker_update() {
   echo "检查 Docker 状态..."
   if docker -v; then
     echo "更新 Docker 容器"
-    docker_list=("code-server" "nginx" "pure-ftpd" "web_object_detection" "zfile") # 可安装容器列表
+    echo "已安装的 Docker 容器: "
+    docker ps -a
     while true; do
-      echo "已安装的 Docker 容器: "
-      docker ps -a
-      
       for i in "${!docker_list[@]}"; do
         echo "$i. ${docker_list[$i]}" # 显示可安装容器列表
       done
       
       read -r -p "选择需要更新的 Docker 容器序号 (q:退出): " input
       case $input in
-        [0123]) # code-server: 在线 Web IDE
+        [01235])
           echo "暂无 ${docker_list[$input]} 的更新脚本"
         ;;
         
@@ -313,7 +319,6 @@ function docker_update() {
 
 github_proxy_set
 
-script_list=("app_install" "term_config" "swap_set" "docker_install" "docker_deploy" "apt_clean" "sys_reboot" "docker_update") # 可安装容器列表
 
 if grep "Ubuntu" /etc/issue; then # 判断系统发行版是否为 Ubuntu
   while true; do
@@ -321,11 +326,11 @@ if grep "Ubuntu" /etc/issue; then # 判断系统发行版是否为 Ubuntu
     for i in "${!script_list[@]}"; do
       echo "$i. ${script_list[$i]}" # 显示可安装容器列表
     done
-    echo "a. 以上所有操作"
+    echo "i. 初始化配置脚本"
     read -r -p "选择要进行的操作 (q:退出): " input
     case $input in
       [01234567]) ${script_list[$input]} ;;
-      [aA])
+      [iI])
         ${script_list[0]} &&
         ${script_list[1]} &&
         ${script_list[2]} &&
