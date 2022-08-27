@@ -1,8 +1,8 @@
 version: "3"
 services:
   subweb:
-    container_name: subweb
-    build: ~/subweb
+    container_name: sub-web
+    build: ~/sub-web
     ports:
       - 58080:80
     restart: always

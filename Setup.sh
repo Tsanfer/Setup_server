@@ -5,7 +5,7 @@ github_repo="github.com"               # 默认 github 仓库域名
 github_raw="raw.githubusercontent.com" # 默认 github raw 域名
 
 script_list=("app_update_install" "term_config" "swap_set" "docker_install" "docker_deploy" "apt_clean" "sys_reboot" "docker_update")
-docker_list=("code-server" "nginx" "pure-ftpd" "web_object_detection" "zfile" "subconverter" "subweb") # 可安装容器列表
+docker_list=("code-server" "nginx" "pure-ftpd" "web_object_detection" "zfile" "subconverter" "sub-web") # 可安装容器列表
 
 # 设置 github 镜像域名
 function github_proxy_set() {
@@ -226,8 +226,8 @@ function docker_deploy() {
           curl http://localhost:25500/version
         ;;
 
-        [6]) # subweb: 订阅转换前端
-          git clone https://github.com/CareyWang/sub-web ~/subweb &&
+        [6]) # sub-web: 订阅转换前端
+          git clone https://github.com/CareyWang/sub-web ~/sub-web &&
           sed -i 's/^VUE_APP_SUBCONVERTER_DEFAULT_BACKEND.*/VUE_APP_SUBCONVERTER_DEFAULT_BACKEND = "http:\/\/api.tsanfer.com:25500"/g' ~/sub-web/.env # 替换旧有的后端地址
           wget https://$github_raw/Tsanfer/Setup_server/main/"${docker_list[$input]}".yml -NP ~ &&
           docker compose -f ~/"${docker_list[$input]}".yml up -d
