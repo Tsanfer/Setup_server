@@ -44,7 +44,8 @@ function app_update_install() {
   echo
   sudo apt update -y &&
   sudo apt upgrade -y &&
-  sudo apt install zsh git vim unzip bc curl wget -y &&
+  sudo apt install zsh git vim unzip bc curl wget -y
+
   if ! btm --version; then
     wget https://$github_repo/ClementTsang/bottom/releases/download/0.6.8/bottom_0.6.8_amd64.deb -NP ~ &&
     sudo dpkg -i ~/bottom_0.6.8_amd64.deb
@@ -61,6 +62,8 @@ function app_update_install() {
     echo "已安装 neofetch"
   fi
   
+  wget https://$github_raw/Tsanfer/Setup_server/main/.vimrc -NP ~ # 下载 vim 自定义配置文件
+
   neofetch
   read -rp "按回车键继续"
 }
@@ -78,50 +81,32 @@ function term_config() {
     git clone https://$github_repo/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting && # 下载 zsh 语法高亮插件
     sed -i 's/^plugins=(/plugins=(\nzsh-autosuggestions\nzsh-syntax-highlighting\n/g' ~/.zshrc                                                 # 启用 zsh 插件
   else
-    while true; do
-      read -rp "已安装 oh-my-zsh, 是否更新版本? [Y/n] " input
-      case $input in
-        [yY])
-          omz update
-          break
-        ;;
-        
-        [nN])
-          break
-        ;;
-        
-        *) echo "错误选项：$REPLY" ;;
-      esac
-    done
+    if ! oh-my-posh --version; then
+      echo "oh-my-posh 未安装"
+      wget https://$github_repo/JanDeDobbeleer/oh-my-posh/releases/latest/download/themes.zip -O ~/.poshthemes/themes.zip && # 下载 oh-my-posh 主题文件
+      unzip ~/.poshthemes/themes.zip -d ~/.poshthemes &&
+      chmod u+rw ~/.poshthemes/*.omp.* &&
+      rm ~/.poshthemes/themes.zip &&
+      sed -i '$a\eval "$(oh-my-posh --init --shell zsh --config ~/.poshthemes/craver.omp.json)"' ~/.zshrc # 每次进入 zsh 时，自动打开 oh-my-posh 主题
+    else
+      while true; do
+        read -rp "已安装 oh-my-posh, 是否更新版本? [Y/n] " input
+        case $input in
+          [yY])
+            sudo wget https://github.com/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh
+            sudo chmod +x /usr/local/bin/oh-my-posh
+            break
+          ;;
+          
+          [nN])
+            break
+          ;;
+          
+          *) echo "错误选项：$REPLY" ;;
+        esac
+      done
+    fi
   fi
-  
-  if ! oh-my-posh --version; then
-    echo "oh-my-posh 未安装"
-    wget https://$github_repo/JanDeDobbeleer/oh-my-posh/releases/latest/download/themes.zip -O ~/.poshthemes/themes.zip && # 下载 oh-my-posh 主题文件
-    unzip ~/.poshthemes/themes.zip -d ~/.poshthemes &&
-    chmod u+rw ~/.poshthemes/*.omp.* &&
-    rm ~/.poshthemes/themes.zip &&
-    sed -i '$a\eval "$(oh-my-posh --init --shell zsh --config ~/.poshthemes/craver.omp.json)"' ~/.zshrc # 每次进入 zsh 时，自动打开 oh-my-posh 主题
-  else
-    while true; do
-      read -rp "已安装 oh-my-posh, 是否更新版本? [Y/n] " input
-      case $input in
-        [yY])
-          sudo wget https://github.com/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh
-          sudo chmod +x /usr/local/bin/oh-my-posh
-          break
-        ;;
-        
-        [nN])
-          break
-        ;;
-        
-        *) echo "错误选项：$REPLY" ;;
-      esac
-    done
-  fi
-  
-  wget https://$github_raw/Tsanfer/Setup_server/main/.vimrc -NP ~ # 下载 vim 自定义配置文件
 }
 
 # 设置 swap 内存
