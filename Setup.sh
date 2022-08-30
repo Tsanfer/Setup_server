@@ -71,7 +71,7 @@ function term_config() {
   echo "---------- 配置终端 ----------"
   echo
   
-  if ! omz version; then
+  if [ ! -d ~/.oh-my-zsh ]; then
     echo "oh-my-zsh 未安装"
     RUNZSH=no sh -c "$(curl -fsSL https://$github_raw/ohmyzsh/ohmyzsh/master/tools/install.sh)" &&                                             # 使用 oh-my-zsh 官方一键安装脚本
     git clone https://$github_repo/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions &&             # 下载 zsh 自动建议插件
