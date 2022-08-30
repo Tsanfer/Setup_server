@@ -70,19 +70,56 @@ function term_config() {
   echo
   echo "---------- 配置终端 ----------"
   echo
-  chsh -s "$(which zsh)" &&                                                                                                                      # 设置 zsh 为默认 shell
-  RUNZSH=no sh -c "$(curl -fsSL https://$github_raw/ohmyzsh/ohmyzsh/master/tools/install.sh)" &&                                               # 使用 oh-my-zsh 官方一键安装脚本
-  git clone https://$github_repo/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions &&             # 下载 zsh 自动建议插件
-  git clone https://$github_repo/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting && # 下载 zsh 语法高亮插件
-  sed -i 's/^plugins=(/plugins=(\nzsh-autosuggestions\nzsh-syntax-highlighting\n/g' ~/.zshrc &&                                                # 启用 zsh 插件
-  sudo wget https://$github_repo/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh &&           # 下载 oh-my-posh
-  sudo chmod +x /usr/local/bin/oh-my-posh &&
-  mkdir ~/.poshthemes &&
-  wget https://$github_repo/JanDeDobbeleer/oh-my-posh/releases/latest/download/themes.zip -O ~/.poshthemes/themes.zip && # 下载 oh-my-posh 主题文件
-  unzip ~/.poshthemes/themes.zip -d ~/.poshthemes &&
-  chmod u+rw ~/.poshthemes/*.omp.* &&
-  rm ~/.poshthemes/themes.zip &&
-  sed -i '$a\eval "$(oh-my-posh --init --shell zsh --config ~/.poshthemes/craver.omp.json)"' ~/.zshrc # 每次进入 zsh 时，自动打开 oh-my-posh 主题
+  
+  if ! omz version; then
+    echo "oh-my-zsh 未安装"
+    RUNZSH=no sh -c "$(curl -fsSL https://$github_raw/ohmyzsh/ohmyzsh/master/tools/install.sh)" &&                                             # 使用 oh-my-zsh 官方一键安装脚本
+    git clone https://$github_repo/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions &&             # 下载 zsh 自动建议插件
+    git clone https://$github_repo/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting && # 下载 zsh 语法高亮插件
+    sed -i 's/^plugins=(/plugins=(\nzsh-autosuggestions\nzsh-syntax-highlighting\n/g' ~/.zshrc                                                 # 启用 zsh 插件
+  else
+    while true; do
+      read -rp "已安装 oh-my-zsh, 是否更新版本? [Y/n] " input
+      case $input in
+        [yY])
+          omz update
+          break
+        ;;
+        
+        [nN])
+          break
+        ;;
+        
+        *) echo "错误选项：$REPLY" ;;
+      esac
+    done
+  fi
+  
+  if ! oh-my-posh --version; then
+    echo "oh-my-posh 未安装"
+    wget https://$github_repo/JanDeDobbeleer/oh-my-posh/releases/latest/download/themes.zip -O ~/.poshthemes/themes.zip && # 下载 oh-my-posh 主题文件
+    unzip ~/.poshthemes/themes.zip -d ~/.poshthemes &&
+    chmod u+rw ~/.poshthemes/*.omp.* &&
+    rm ~/.poshthemes/themes.zip &&
+    sed -i '$a\eval "$(oh-my-posh --init --shell zsh --config ~/.poshthemes/craver.omp.json)"' ~/.zshrc # 每次进入 zsh 时，自动打开 oh-my-posh 主题
+  else
+    while true; do
+      read -rp "已安装 oh-my-posh, 是否更新版本? [Y/n] " input
+      case $input in
+        [yY])
+          sudo wget https://github.com/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh
+          sudo chmod +x /usr/local/bin/oh-my-posh
+          break
+        ;;
+        
+        [nN])
+          break
+        ;;
+        
+        *) echo "错误选项：$REPLY" ;;
+      esac
+    done
+  fi
   
   wget https://$github_raw/Tsanfer/Setup_server/main/.vimrc -NP ~ # 下载 vim 自定义配置文件
 }
@@ -219,25 +256,27 @@ function docker_deploy() {
           curl -o ~/application.properties https://c.jun6.net/ZFILE/application.properties &&
           docker compose -f ~/"${docker_list[$input]}".yml up -d
         ;;
-
+        
         [5]) # subconverter: 订阅转换后端
           wget https://$github_raw/Tsanfer/Setup_server/main/"${docker_list[$input]}".yml -NP ~ &&
           docker compose -f ~/"${docker_list[$input]}".yml up -d &&
           curl http://localhost:25500/version
         ;;
-
+        
         [6]) # sub-web: 订阅转换前端
           git clone https://github.com/CareyWang/sub-web ~/sub-web &&
           sed -i 's/^VUE_APP_SUBCONVERTER_DEFAULT_BACKEND.*/VUE_APP_SUBCONVERTER_DEFAULT_BACKEND = "http:\/\/api.tsanfer.com:25500"/g' ~/sub-web/.env # 替换旧有的后端地址
           wget https://$github_raw/Tsanfer/Setup_server/main/"${docker_list[$input]}".yml -NP ~ &&
           docker compose -f ~/"${docker_list[$input]}".yml up -d
         ;;
-
+        
         [qQ]) break ;;
         *) echo "错误选项：$REPLY" ;;
       esac
     done
+    echo "已下载的 Docker 镜像: "
     docker images -a # 显示当前所有 docker 镜像
+    echo "已安装的 Docker 容器: "
     docker ps -a     # 显示当前所有 docker 容器
   else
     echo "Docker 未安装!"
