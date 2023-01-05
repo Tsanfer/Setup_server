@@ -4,7 +4,7 @@
 github_repo="github.com"               # 默认 github 仓库域名
 github_raw="raw.githubusercontent.com" # 默认 github raw 域名
 
-script_list=("app_update_install" "term_config" "swap_set" "docker_install" "docker_deploy" "apt_clean" "sys_reboot" "docker_update")
+script_list=("app_update_install" "term_config" "swap_set" "docker_install" "docker_deploy" "apt_clean" "sys_reboot" "docker_update" "docker_remove")
 docker_list=("code-server" "nginx" "pure-ftpd" "web_object_detection" "zfile" "subconverter" "sub-web" "mdserver-web") # 可安装容器列表
 
 # 设置 github 镜像域名
@@ -83,17 +83,20 @@ function term_config() {
   else
     if ! oh-my-posh --version; then
       echo "oh-my-posh 未安装"
+      sudo wget https://$github_repo/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh &&
+      sudo chmod +x /usr/local/bin/oh-my-posh &&
+      mkdir ~/.poshthemes &&
       wget https://$github_repo/JanDeDobbeleer/oh-my-posh/releases/latest/download/themes.zip -O ~/.poshthemes/themes.zip && # 下载 oh-my-posh 主题文件
       unzip ~/.poshthemes/themes.zip -d ~/.poshthemes &&
       chmod u+rw ~/.poshthemes/*.omp.* &&
       rm ~/.poshthemes/themes.zip &&
-      sed -i '$a\eval "$(oh-my-posh --init --shell zsh --config ~/.poshthemes/craver.omp.json)"' ~/.zshrc # 每次进入 zsh 时，自动打开 oh-my-posh 主题
+      sed -i '$a\eval "$(oh-my-posh init zsh --config ~/.poshthemes/craver.omp.json)"' ~/.zshrc # 每次进入 zsh 时，自动打开 oh-my-posh 主题
     else
       while true; do
         read -rp "已安装 oh-my-posh, 是否更新版本? [Y/n] " input
         case $input in
           [yY])
-            sudo wget https://github.com/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh
+            sudo wget https://$github_repo/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh
             sudo chmod +x /usr/local/bin/oh-my-posh
             break
           ;;
@@ -199,6 +202,7 @@ function docker_deploy() {
   if docker -v; then
     echo "构建 Docker 容器"
     while true; do
+      echo
       echo "已安装的 Docker 容器: "
       docker ps -a
       
@@ -249,6 +253,14 @@ function docker_deploy() {
         ;;
         
         [6]) # sub-web: 订阅转换前端
+          git clone https://github.com/CareyWang/sub-web ~/sub-web
+          read -rp "设置订阅转换后端地址（默认：api.tsanfer.com:25500）：" sub_web_backend
+          if [ -z $sub_web_backend ];then
+            sub_web_backend="api.tsanfer.com:25500"
+          fi
+          sed -i 's/^VUE_APP_SUBCONVERTER_DEFAULT_BACKEND.*/VUE_APP_SUBCONVERTER_DEFAULT_BACKEND = "/g' ~/sub-web/.env
+          sed -i "s/^VUE_APP_SUBCONVERTER_DEFAULT_BACKEND.*/&http:\/\/$sub_web_backend/g" ~/sub-web/.env # 替换旧有的后端地址
+          sed -i 's/^VUE_APP_SUBCONVERTER_DEFAULT_BACKEND.*/&"/g' ~/sub-web/.env
           wget https://$github_raw/Tsanfer/Setup_server/main/"${docker_list[$input]}".yml -NP ~ &&
           docker compose -f ~/"${docker_list[$input]}".yml up -d
         ;;
@@ -262,8 +274,10 @@ function docker_deploy() {
         *) echo "错误选项：$REPLY" ;;
       esac
     done
+    echo
     echo "已下载的 Docker 镜像: "
     docker images -a # 显示当前所有 docker 镜像
+    echo
     echo "已安装的 Docker 容器: "
     docker ps -a     # 显示当前所有 docker 容器
   else
@@ -318,20 +332,17 @@ function docker_update() {
   echo
   echo "检查 Docker 状态..."
   if docker -v; then
-    echo "更新 Docker 容器"
+    echo
     echo "已安装的 Docker 容器: "
     docker ps -a
     while true; do
+      
       for i in "${!docker_list[@]}"; do
         echo "$i. ${docker_list[$i]}" # 显示可安装容器列表
       done
       
       read -r -p "选择需要更新的 Docker 容器序号 (q:退出): " input
       case $input in
-        [0123567])
-          echo "暂无 ${docker_list[$input]} 的更新脚本"
-        ;;
-        
         [4]) # zfile: 在线云盘
           docker run --rm \
           -v /var/run/docker.sock:/var/run/docker.sock \
@@ -340,12 +351,50 @@ function docker_update() {
           --run-once \
           zfile
         ;;
-        
         [qQ]) break ;;
-        *) echo "错误选项：$REPLY" ;;
+        *) echo "暂无 ${docker_list[$input]} 的更新脚本" ;;
       esac
     done
+    echo
+    echo "已下载的 Docker 镜像: "
     docker images -a # 显示当前所有 docker 镜像
+    echo
+    echo "已安装的 Docker 容器: "
+    docker ps -a     # 显示当前所有 docker 容器
+  else
+    echo "Docker 未安装!"
+  fi
+}
+
+# 删除 docker 镜像和容器
+function docker_remove() {
+  echo
+  echo "---------- 删除 docker 镜像和容器 ----------"
+  echo
+  echo "检查 Docker 状态..."
+  if docker -v; then
+    echo
+    echo "已安装的 Docker 容器: "
+    docker ps -a
+    while true; do
+      
+      for i in "${!docker_list[@]}"; do
+        echo "$i. ${docker_list[$i]}" # 显示可安装容器列表
+      done
+      
+      read -r -p "选择需要删除的 Docker 容器序号 (q:退出): " input
+      case $input in
+        # *) echo "错误选项：$REPLY" ;;
+        [qQ]) break ;;
+        *) docker stop ${docker_list[$input]} ;;
+      esac
+    done
+    docker system prune -a -f &&
+    echo
+    echo "已下载的 Docker 镜像: "
+    docker images -a # 显示当前所有 docker 镜像
+    echo
+    echo "已安装的 Docker 容器: "
     docker ps -a     # 显示当前所有 docker 容器
   else
     echo "Docker 未安装!"
@@ -354,9 +403,9 @@ function docker_update() {
 
 github_proxy_set
 
-
 if grep "Ubuntu" /etc/issue; then # 判断系统发行版是否为 Ubuntu
   while true; do
+    echo
     echo "选择要进行的脚本: "
     for i in "${!script_list[@]}"; do
       echo "$i. ${script_list[$i]}" # 显示可安装容器列表
@@ -364,7 +413,6 @@ if grep "Ubuntu" /etc/issue; then # 判断系统发行版是否为 Ubuntu
     echo "i. 初始化配置脚本"
     read -r -p "选择要进行的操作 (q:退出): " input
     case $input in
-      [01234567]) ${script_list[$input]} ;;
       [iI])
         ${script_list[0]} &&
         ${script_list[1]} &&
@@ -375,7 +423,8 @@ if grep "Ubuntu" /etc/issue; then # 判断系统发行版是否为 Ubuntu
         ${script_list[6]}
       ;;
       [qQ]) break ;;
-      *) echo "错误选项：$REPLY" ;;
+      # *) echo "错误选项：$REPLY" ;;
+      *) ${script_list[$input]} ;;
     esac
   done
   echo "Done!!!"
