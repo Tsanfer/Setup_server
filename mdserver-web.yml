@@ -1,0 +1,11 @@
+version: '3.3'
+services:
+    mw-server:
+        container_name: mw-server
+        privileged: true
+        ports:
+            - '7200:7200'
+            - '80:80'
+            - '443:443'
+            - '888:888'
+        image: 'ddsderek/mw-server:latest'
