@@ -21,6 +21,8 @@
   - `zfile`: 在线网盘
   - `subconverter`: 订阅转换后端
   - `subweb`: 订阅转换前端
+  - `mdserver-web`: 一款简单Linux面板服务
+
 - 清理 APT 空间，重启系统
 
 ## 一键脚本
@@ -38,11 +40,11 @@ bash -c "$(wget https://raw.githubusercontent.com/Tsanfer/Setup_server/main/Setu
 ### 国内使用
 
 ```bash
-bash -c "$(curl -fsSL https://mirror.ghproxy.com/raw.githubusercontent.com/Tsanfer/Setup_server/main/Setup.sh)"
+bash -c "$(curl -fsSL https://ghproxy.com/https://raw.githubusercontent.com/Tsanfer/Setup_server/main/Setup.sh)"
 ```
 
 或
 
 ```bash
-bash -c "$(wget https://mirror.ghproxy.com/raw.githubusercontent.com/Tsanfer/Setup_server/main/Setup.sh -O -)"
+bash -c "$(wget https://ghproxy.com/https://raw.githubusercontent.com/Tsanfer/Setup_server/main/Setup.sh -O -)"
 ```

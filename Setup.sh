@@ -328,7 +328,7 @@ function docker_update() {
       
       read -r -p "选择需要更新的 Docker 容器序号 (q:退出): " input
       case $input in
-        [012356])
+        [0123567])
           echo "暂无 ${docker_list[$input]} 的更新脚本"
         ;;
         
