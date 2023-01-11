@@ -7,6 +7,6 @@ services:
     image: tsanfer/web_object_detection
     container_name: object_detection
     ports:
-      - 4000:4000 # Web 前端
-      - 8000:8000 # 后端
+      - 4000:4000 # Web 后端
+      - 8000:8000 # Web 前端
     restart: unless-stopped
