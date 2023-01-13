@@ -4,8 +4,12 @@
 github_repo="github.com"               # 默认 github 仓库域名
 github_raw="raw.githubusercontent.com" # 默认 github raw 域名
 
-script_list=("app_update_install" "term_config" "swap_set" "docker_install" "docker_deploy" "apt_clean" "sys_reboot" "docker_update" "docker_remove")
-docker_list=("code-server" "nginx" "pure-ftpd" "web_object_detection" "zfile" "subconverter" "sub-web" "mdserver-web" "qinglong") # 可安装容器列表
+script_list=("app_update_init" "swap_set" "term_config" "app_install" "app_remove" "docker_init" "docker_install" "docker_update" "docker_remove" "apt_clean" "sys_reboot")      # 脚本列表
+script_list_info=("APT 软件更新、默认软件安装" "设置 swap 内存" "配置终端" "自选软件安装" "自选软件卸载" "安装，更新 Docker" "从 Docker compose 部署 docker 容器" "更新 docker 镜像和容器" "删除 docker 镜像和容器" "清理 APT 空间" "重启系统") # 脚本列表说明
+docker_list=("code-server" "nginx" "pure-ftpd" "web_object_detection" "zfile" "subconverter" "sub-web" "mdserver-web" "qinglong" "webdav-client")                                # 可安装容器列表
+docker_list_info=("在线 Web IDE" "Web 服务器" "FTP 服务器" "在线 web 目标识别" "在线云盘" "订阅转换后端" "订阅转换前端" "一款简单Linux面板服务" "定时任务管理面板" "Webdav 客户端，同步映射到宿主文件系统")                                   # 可安装容器列表说明
+app_list=("mw" "bt")
+app_list_info=("一款简单Linux面板服务" "aaPanel面板（宝塔国外版）")
 
 # 设置 github 镜像域名
 function github_proxy_set() {
@@ -37,23 +41,34 @@ function github_proxy_set() {
   done
 }
 
-# APT 软件更新安装
-function app_update_install() {
+# APT 软件更新、默认软件安装
+function app_update_init() {
   echo
-  echo "---------- 应用安装 ----------"
+  echo "---------- APT 软件更新、默认软件安装 ----------"
   echo
   sudo apt update -y &&
     sudo apt upgrade -y &&
-    sudo apt install zsh git vim unzip bc curl wget -y
+    # 默认安装：
+    #   zsh - 命令行界面
+    #   git - 版本控制工具
+    #   vim - 文本编辑器
+    #   unzip - 解压缩zip文件
+    #   bc - 计算器
+    #   curl - 网络文件下载
+    #   wget - 网络文件下载
+    #   rsync - 文件同步
+    #   bottom - 图形化系统监控
+    #   neofetch - 系统信息工具
+    sudo apt install zsh git vim unzip bc curl wget rsync -y
 
-  if ! btm --version; then
+  if ! type btm >/dev/null 2>&1; then
     wget https://$github_repo/ClementTsang/bottom/releases/download/0.6.8/bottom_0.6.8_amd64.deb -NP ~ &&
       sudo dpkg -i ~/bottom_0.6.8_amd64.deb
   else
     echo "已安装 bottom"
   fi
 
-  if ! neofetch --version; then
+  if ! type neofetch >/dev/null 2>&1; then
     if ! sudo apt install neofetch -y; then
       git clone https://$github_repo/dylanaraps/neofetch && # 编译安装
         make -C ~/neofetch install
@@ -62,54 +77,11 @@ function app_update_install() {
     echo "已安装 neofetch"
   fi
 
-  wget https://$github_raw/Tsanfer/Setup_server/main/.vimrc -NP ~ # 下载 vim 自定义配置文件
+  # 下载 vim 自定义配置文件
+  wget https://$github_raw/Tsanfer/Setup_server/main/.vimrc -NP ~
 
   neofetch
   read -rp "按回车键继续"
-}
-
-# 配置终端
-function term_config() {
-  echo
-  echo "---------- 配置终端 ----------"
-  echo
-
-  if [ ! -d ~/.oh-my-zsh ]; then
-    echo "oh-my-zsh 未安装"
-    RUNZSH=no sh -c "$(curl -fsSL https://$github_raw/ohmyzsh/ohmyzsh/master/tools/install.sh)" &&                                               # 使用 oh-my-zsh 官方一键安装脚本
-      git clone https://$github_repo/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions &&             # 下载 zsh 自动建议插件
-      git clone https://$github_repo/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting && # 下载 zsh 语法高亮插件
-      sed -i 's/^plugins=(/plugins=(\nzsh-autosuggestions\nzsh-syntax-highlighting\n/g' ~/.zshrc                                                 # 启用 zsh 插件
-  else
-    if ! oh-my-posh --version; then
-      echo "oh-my-posh 未安装"
-      sudo wget https://$github_repo/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh &&
-        sudo chmod +x /usr/local/bin/oh-my-posh &&
-        mkdir ~/.poshthemes &&
-        wget https://$github_repo/JanDeDobbeleer/oh-my-posh/releases/latest/download/themes.zip -O ~/.poshthemes/themes.zip && # 下载 oh-my-posh 主题文件
-        unzip ~/.poshthemes/themes.zip -d ~/.poshthemes &&
-        chmod u+rw ~/.poshthemes/*.omp.* &&
-        rm ~/.poshthemes/themes.zip &&
-        sed -i '$a\eval "$(oh-my-posh init zsh --config ~/.poshthemes/craver.omp.json)"' ~/.zshrc # 每次进入 zsh 时，自动打开 oh-my-posh 主题
-    else
-      while true; do
-        read -rp "已安装 oh-my-posh, 是否更新版本? [Y/n] " input
-        case $input in
-        [yY])
-          sudo wget https://$github_repo/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh
-          sudo chmod +x /usr/local/bin/oh-my-posh
-          break
-          ;;
-
-        [nN])
-          break
-          ;;
-
-        *) echo "错误选项：$REPLY" ;;
-        esac
-      done
-    fi
-  fi
 }
 
 # 设置 swap 内存
@@ -157,13 +129,155 @@ function swap_set() {
   done
 }
 
+# 配置终端
+function term_config() {
+  echo
+  echo "---------- 配置终端 ----------"
+  echo
+
+  if [ ! -d ~/.oh-my-zsh ]; then
+    echo "oh-my-zsh 未安装"
+    RUNZSH=no sh -c "$(curl -fsSL https://$github_raw/ohmyzsh/ohmyzsh/master/tools/install.sh)" &&                                               # 使用 oh-my-zsh 官方一键安装脚本
+      git clone https://$github_repo/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions &&             # 下载 zsh 自动建议插件
+      git clone https://$github_repo/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting && # 下载 zsh 语法高亮插件
+      sed -i 's/^plugins=(/plugins=(\nzsh-autosuggestions\nzsh-syntax-highlighting\n/g' ~/.zshrc
+
+    sudo wget https://$github_repo/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh &&
+      sudo chmod +x /usr/local/bin/oh-my-posh &&
+      mkdir ~/.poshthemes &&
+      wget https://$github_repo/JanDeDobbeleer/oh-my-posh/releases/latest/download/themes.zip -O ~/.poshthemes/themes.zip && # 下载 oh-my-posh 主题文件
+      unzip ~/.poshthemes/themes.zip -d ~/.poshthemes &&
+      chmod u+rw ~/.poshthemes/*.omp.* &&
+      rm ~/.poshthemes/themes.zip &&
+      sed -i '$a\eval "$(oh-my-posh init zsh --config ~/.poshthemes/craver.omp.json)"' ~/.zshrc # 每次进入 zsh 时，自动打开 oh-my-posh 主题
+
+  elif ! oh-my-posh --version; then
+    echo "oh-my-posh 未安装"
+    sudo wget https://$github_repo/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh &&
+      sudo chmod +x /usr/local/bin/oh-my-posh &&
+      mkdir ~/.poshthemes &&
+      wget https://$github_repo/JanDeDobbeleer/oh-my-posh/releases/latest/download/themes.zip -O ~/.poshthemes/themes.zip && # 下载 oh-my-posh 主题文件
+      unzip ~/.poshthemes/themes.zip -d ~/.poshthemes &&
+      chmod u+rw ~/.poshthemes/*.omp.* &&
+      rm ~/.poshthemes/themes.zip &&
+      sed -i '$a\eval "$(oh-my-posh init zsh --config ~/.poshthemes/craver.omp.json)"' ~/.zshrc # 每次进入 zsh 时，自动打开 oh-my-posh 主题
+
+  else
+    while true; do
+      read -rp "已安装 oh-my-posh, 是否更新版本? [Y/n] " input
+      case $input in
+      [yY])
+        sudo wget https://$github_repo/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh
+        sudo chmod +x /usr/local/bin/oh-my-posh
+        break
+        ;;
+
+      [nN])
+        break
+        ;;
+
+      *) echo "错误选项：$REPLY" ;;
+      esac
+    done
+  fi
+
+}
+
+function app_install() {
+  echo
+  echo "---------- 自选软件安装 ----------"
+  echo
+
+  while true; do
+    echo
+    echo "已安装的自选软件: "
+    for i in "${!app_list[@]}"; do
+      case $i in
+
+      [0]) # mdserver-web: 一款简单Linux面板服务
+        if type "${app_list[$i]}" >/dev/null 2>&1; then
+          echo "${app_list_info[$i]} 已安装"
+        fi
+        ;;
+
+      [1]) # aaPanel: 宝塔面板国外版
+        if type "${app_list[$i]}" >/dev/null 2>&1; then
+          echo "${app_list_info[$i]} 已安装"
+        fi
+        ;;
+
+      esac
+    done
+
+    echo
+    for i in "${!app_list_info[@]}"; do
+      printf "%2s. %-20s%-s\n" "$i" "${app_list[$i]}" "${app_list_info[$i]}" # 显示可安装容器列表
+    done
+    read -r -p "选择需要安装的软件序号 (q:退出): " input
+    case $input in
+    [0]) # mdserver-web: 一款简单Linux面板服务
+      curl -fsSL https://$github_raw/midoks/mdserver-web/master/scripts/install.sh | bash
+      ;;
+    [1]) # aaPanel: 宝塔面板国外版
+      wget -O install.sh http://www.aapanel.com/script/install-ubuntu_6.0_en.sh && sudo bash install.sh aapanel
+      ;;
+    [qQ]) break ;;
+    *) echo "错误选项：$REPLY" ;;
+    esac
+  done
+}
+
+function app_remove() {
+  echo
+  echo "---------- 自选软件卸载 ----------"
+  echo
+
+  while true; do
+    echo
+    echo "已安装的自选软件: "
+    for i in "${!app_list[@]}"; do
+      case $i in
+
+      [0]) # mdserver-web: 一款简单Linux面板服务
+        if type "${app_list[$i]}" >/dev/null 2>&1; then
+          echo "${app_list_info[$i]} 已安装"
+        fi
+        ;;
+
+      [1]) # aaPanel: 宝塔面板国外版
+        if type "${app_list[$i]}" >/dev/null 2>&1; then
+          echo "${app_list_info[$i]} 已安装"
+        fi
+        ;;
+
+      esac
+    done
+
+    echo
+    for i in "${!app_list_info[@]}"; do
+      printf "%2s. %-20s%-s\n" "$i" "${app_list[$i]}" "${app_list_info[$i]}" # 显示可安装容器列表
+    done
+    read -r -p "选择需要安装的软件序号 (q:退出): " input
+    case $input in
+    [0]) # mdserver-web: 一款简单Linux面板服务
+      wget -O uninstall.sh https://raw.githubusercontent.com/midoks/mdserver-web/master/scripts/uninstall.sh && bash uninstall.sh
+      ;;
+    [1]) # aaPanel: 宝塔面板国外版
+      wget http://download.bt.cn/install/bt-uninstall.sh && sh bt-uninstall.sh
+      ;;
+    [qQ]) break ;;
+    *) echo "错误选项：$REPLY" ;;
+    esac
+  done
+}
+
 # Docker 安装/更新
-function docker_install() {
+function docker_init() {
   echo
   echo "---------- 安装/更新 Docker ----------"
   echo
-  release_ver=$(awk '/Ubuntu/ {print $2}' /etc/issue | awk -F. '{printf "%s.%s\n",$1,$2}') # 获得 Ubuntu 版本号（如：20.04）
-  if echo "$(echo "$release_ver" | bc) >= 18.04" | bc; then                                # 如果版本符合要求
+  release_ver=$(awk '/Ubuntu/ {print $2}' /etc/issue | awk -F. '{printf "%2s.%s\n",$1,$2}') # 获得 Ubuntu 版本号（如：20.04）
+  if echo "$(echo "$release_ver" | bc) >= 18.04" | bc; then                                 # 如果版本符合要求
     echo "安装/更新 Docker 环境..."
 
     if docker -v; then
@@ -190,7 +304,7 @@ function docker_install() {
   fi
 }
 
-# 配置 Docker 容器名并部署容器
+# 规范化 Docker 容器名
 function docker_container_name_conf() {
   if grep "container_name" ~/"$1".yml >/dev/null; then
     sed -i "s/container_name.*/container_name: $1/g" ~/"$1".yml # 修改容器默认名称
@@ -198,13 +312,12 @@ function docker_container_name_conf() {
     sed -i "s/.*image.*/&\n&/g" ~/"$1".yml &&
       sed -i "0,/image.*/s/image.*/container_name: $1/" ~/"$1".yml # 添加容器名称
   fi
-  docker compose -f ~/"$1".yml up -d
 }
 
 # 从 Docker compose 部署 docker 容器
-function docker_deploy() {
+function docker_install() {
   echo
-  echo "---------- 运行 Docker-compose ----------"
+  echo "---------- 从 Docker compose 部署 docker 容器 ----------"
   echo
   echo "检查 Docker 状态..."
   if docker -v; then
@@ -215,7 +328,7 @@ function docker_deploy() {
       docker ps -a
 
       for i in "${!docker_list[@]}"; do
-        echo "$i. ${docker_list[$i]}" # 显示可安装容器列表
+        printf "%2s. %-20s%-s\n" "$i" "${docker_list[$i]}" "${docker_list_info[$i]}" # 显示可安装容器列表
       done
 
       read -r -p "选择需要安装的 Docker 容器序号 (q:退出): " input
@@ -227,37 +340,78 @@ function docker_deploy() {
         echo "SUDO_PASSWORD=$sudo_password" >>~/"${docker_list[$input]}".env
         wget https://$github_raw/Tsanfer/Setup_server/main/"${docker_list[$input]}".yml -O ~/"${docker_list[$input]}".yml # 下载选择的 docker compose 文件
         docker_container_name_conf "${docker_list[$input]}"
+        docker compose -f ~/"${docker_list[$input]}".yml --env-file ~/"${docker_list[$input]}".env up -d
         ;;
 
       [1]) # nginx: Web 服务器
         wget https://$github_raw/Tsanfer/Setup_server/main/"${docker_list[$input]}".yml -O ~/"${docker_list[$input]}".yml &&
           docker_container_name_conf "${docker_list[$input]}"
+        docker compose -f ~/"${docker_list[$input]}".yml up -d
         ;;
 
       [2]) # pure-ftpd: FTP 服务器
+        wget https://$github_raw/Tsanfer/Setup_server/main/"${docker_list[$input]}".yml -O ~/"${docker_list[$input]}".yml
+        docker_container_name_conf "${docker_list[$input]}"
         read -rp "设置 ftp 用户名: " ftp_username
         read -rsp "设置 ftp 密码: " ftp_password
         echo "FTP_USER_NAME=$ftp_username" >~/"${docker_list[$input]}".env
         echo "FTP_USER_PASS=$ftp_password" >>~/"${docker_list[$input]}".env
-        wget https://$github_raw/Tsanfer/Setup_server/main/"${docker_list[$input]}".yml -O ~/"${docker_list[$input]}".yml &&
-          docker_container_name_conf "${docker_list[$input]}"
+        docker compose -f ~/"${docker_list[$input]}".yml --env-file ~/"${docker_list[$input]}".env up -d
         ;;
 
       [3]) # web_object_detection: 在线 web 目标识别
         wget https://$github_raw/Tsanfer/Setup_server/main/"${docker_list[$input]}".yml -O ~/"${docker_list[$input]}".yml &&
           docker_container_name_conf "${docker_list[$input]}"
+        docker compose -f ~/"${docker_list[$input]}".yml up -d
         ;;
 
       [4]) # zfile: 在线云盘
         wget https://$github_raw/Tsanfer/Setup_server/main/"${docker_list[$input]}".yml -O ~/"${docker_list[$input]}".yml &&
-          curl -o ~/application.properties https://c.jun6.net/ZFILE/application.properties &&
+          # curl -o ~/application.properties https://c.jun6.net/ZFILE/application.properties &&
           docker_container_name_conf "${docker_list[$input]}"
+        while true; do
+          read -rp "是否从服务器同步配置信息？(Y/n): " choose
+          case $choose in
+          [yY])
+            read -rp "输入服务器地址（默认：39.105.22.218）: " rsync_ip
+            read -rp "输入 ssh 用户名（默认：root）: " rsync_user
+            read -rp "输入服务器中，配置文件所在文件夹的位置（以'/'结尾）（默认：/mnt/webdav/servers-conf/）: " rsync_dir
+            read -rp "输入服务器中，配置文件的文件名（.tar.gz格式）（默认：zfile-backup.tar.gz）: " rsync_filename
+            if [ -z "$rsync_ip" ]; then
+              rsync_ip="api.tsanfer.com:25500"
+            fi
+            if [ -z "$rsync_user" ]; then
+              rsync_user="root"
+            fi
+            if [ -z "$rsync_dir" ]; then
+              rsync_dir="/mnt/webdav/servers-conf/"
+            fi
+            if [ -z "$rsync_filename" ]; then
+              rsync_filename="zfile-backup.tar.gz"
+            fi
+            # 压缩包内目录结构
+            # .
+            # ├── application.properties
+            # └── zfile
+            #     ├── db
+            #     ├── file
+            #     └── logs
+            rsync -av "$rsync_user"@"$rsync_ip":"${rsync_dir}""${rsync_filename}" ~/
+            tar -xzvf ~/"${rsync_filename}" -C ~/
+            break
+            ;;
+
+          [nN]) break ;;
+          *) echo "错误选项：$REPLY" ;;
+          esac
+        done
+        docker compose -f ~/"${docker_list[$input]}".yml up -d
         ;;
 
       [5]) # subconverter: 订阅转换后端
         wget https://$github_raw/Tsanfer/Setup_server/main/"${docker_list[$input]}".yml -O ~/"${docker_list[$input]}".yml &&
           docker_container_name_conf "${docker_list[$input]}"
-        curl http://localhost:25500/version
+        docker compose -f ~/"${docker_list[$input]}".yml up -d
         ;;
 
       [6]) # sub-web: 订阅转换前端
@@ -271,22 +425,125 @@ function docker_deploy() {
         sed -i 's/^VUE_APP_SUBCONVERTER_DEFAULT_BACKEND.*/&"/g' ~/sub-web/.env
         wget https://$github_raw/Tsanfer/Setup_server/main/"${docker_list[$input]}".yml -O ~/"${docker_list[$input]}".yml &&
           docker_container_name_conf "${docker_list[$input]}"
+        docker compose -f ~/"${docker_list[$input]}".yml up -d
         ;;
 
       [7]) # mdserver-web: 一款简单Linux面板服务
         wget https://$github_raw/Tsanfer/Setup_server/main/"${docker_list[$input]}".yml -O ~/"${docker_list[$input]}".yml &&
           docker_container_name_conf "${docker_list[$input]}"
+        docker compose -f ~/"${docker_list[$input]}".yml up -d
         ;;
 
       [8]) # qinglong: 定时任务管理面板
         wget https://$github_raw/whyour/qinglong/master/docker/docker-compose.yml -O ~/"${docker_list[$input]}".yml &&
           docker_container_name_conf "${docker_list[$input]}"
+        docker compose -f ~/"${docker_list[$input]}".yml up -d
         ;;
 
-      [qQ]) break ;;
-      *) echo "错误选项：$REPLY" ;;
+      [9]) # webdav-client: Webdav 客户端，同步映射到宿主文件系统
+        wget https://$github_raw/Tsanfer/Setup_server/main/"${docker_list[$input]}".yml -O ~/"${docker_list[$input]}".yml &&
+          docker_container_name_conf "${docker_list[$input]}"
+
+        read -rp "输入 webdav 服务器地址(url)（默认：https://dav.jianguoyun.com/dav/我的坚果云）: " webdav_url
+        read -rp "输入 webdav 用户名（默认：a1124851454@gmail.com）: " webdav_user
+        read -rsp "输入 webdav 密码: " webdav_pass
+        if [ -z "$webdav_url" ]; then
+          webdav_url="https://dav.jianguoyun.com/dav/我的坚果云"
+        fi
+        if [ -z "$webdav_user" ]; then
+          webdav_user="a1124851454@gmail.com"
+        fi
+
+        echo "WEBDRIVE_URL=$webdav_url" >~/"${docker_list[$input]}".env
+        echo "WEBDRIVE_USERNAME=$webdav_user" >>~/"${docker_list[$input]}".env
+        echo "WEBDRIVE_PASSWORD=$webdav_pass" >>~/"${docker_list[$input]}".env
+        docker compose -f ~/"${docker_list[$input]}".yml --env-file ~/"${docker_list[$input]}".env up -d
+        ;;
+
+      [qQ])
+        break
+        ;;
+      *)
+        echo "错误选项：$REPLY"
+        ;;
       esac
     done
+    echo
+    echo "已下载的 Docker 镜像: "
+    docker images -a # 显示当前所有 docker 镜像
+    echo
+    echo "已安装的 Docker 容器: "
+    docker ps -a # 显示当前所有 docker 容器
+  else
+    echo "Docker 未安装!"
+  fi
+}
+
+# 更新 docker 镜像和容器
+function docker_update() {
+  echo
+  echo "---------- 更新 docker 镜像和容器 ----------"
+  echo
+  echo "检查 Docker 状态..."
+  if docker -v; then
+    echo
+    echo "已安装的 Docker 容器: "
+    docker ps -a
+    while true; do
+
+      for i in "${!docker_list[@]}"; do
+        printf "%2s. %-20s%-s\n" "$i" "${docker_list[$i]}" "${docker_list_info[$i]}" # 显示可安装容器列表
+      done
+
+      read -r -p "选择需要更新的 Docker 容器序号 (q:退出): " input
+      case $input in
+      [4]) # zfile: 在线云盘
+        docker run --rm \
+          -v /var/run/docker.sock:/var/run/docker.sock \
+          containrrr/watchtower \
+          --cleanup \
+          --run-once \
+          zfile
+        ;;
+      [qQ]) break ;;
+      *) echo "暂无 ${docker_list[$input]} 的更新脚本" ;;
+      esac
+    done
+    echo
+    echo "已下载的 Docker 镜像: "
+    docker images -a # 显示当前所有 docker 镜像
+    echo
+    echo "已安装的 Docker 容器: "
+    docker ps -a # 显示当前所有 docker 容器
+  else
+    echo "Docker 未安装!"
+  fi
+}
+
+# 删除 docker 镜像和容器
+function docker_remove() {
+  echo
+  echo "---------- 删除 docker 镜像和容器 ----------"
+  echo
+  echo "检查 Docker 状态..."
+  if docker -v; then
+    echo
+    echo "已安装的 Docker 容器: "
+    docker ps -a
+    while true; do
+
+      for i in "${!docker_list[@]}"; do
+        printf "%2s. %-20s%-s\n" "$i" "${docker_list[$i]}" "${docker_list_info[$i]}" # 显示可安装容器列表
+      done
+
+      read -r -p "选择需要删除的 Docker 容器序号 (q:退出): " input
+      case $input in
+      # *) echo "错误选项：$REPLY" ;;
+      [qQ]) break ;;
+      *) docker stop "${docker_list[$input]}" ;;
+      esac
+    done
+    docker system prune -a -f
     echo
     echo "已下载的 Docker 镜像: "
     docker images -a # 显示当前所有 docker 镜像
@@ -329,7 +586,7 @@ function sys_reboot() {
     case $input in
     [yY])
       reboot # 重启系统
-      break
+      exit
       ;;
 
     [nN]) break ;;
@@ -338,102 +595,28 @@ function sys_reboot() {
   done
 }
 
-# 更新 docker 镜像和容器
-function docker_update() {
-  echo
-  echo "---------- 更新 docker 镜像和容器 ----------"
-  echo
-  echo "检查 Docker 状态..."
-  if docker -v; then
-    echo
-    echo "已安装的 Docker 容器: "
-    docker ps -a
-    while true; do
-
-      for i in "${!docker_list[@]}"; do
-        echo "$i. ${docker_list[$i]}" # 显示可安装容器列表
-      done
-
-      read -r -p "选择需要更新的 Docker 容器序号 (q:退出): " input
-      case $input in
-      [4]) # zfile: 在线云盘
-        docker run --rm \
-          -v /var/run/docker.sock:/var/run/docker.sock \
-          containrrr/watchtower \
-          --cleanup \
-          --run-once \
-          zfile
-        ;;
-      [qQ]) break ;;
-      *) echo "暂无 ${docker_list[$input]} 的更新脚本" ;;
-      esac
-    done
-    echo
-    echo "已下载的 Docker 镜像: "
-    docker images -a # 显示当前所有 docker 镜像
-    echo
-    echo "已安装的 Docker 容器: "
-    docker ps -a # 显示当前所有 docker 容器
-  else
-    echo "Docker 未安装!"
-  fi
-}
-
-# 删除 docker 镜像和容器
-function docker_remove() {
-  echo
-  echo "---------- 删除 docker 镜像和容器 ----------"
-  echo
-  echo "检查 Docker 状态..."
-  if docker -v; then
-    echo
-    echo "已安装的 Docker 容器: "
-    docker ps -a
-    while true; do
-
-      for i in "${!docker_list[@]}"; do
-        echo "$i. ${docker_list[$i]}" # 显示可安装容器列表
-      done
-
-      read -r -p "选择需要删除的 Docker 容器序号 (q:退出): " input
-      case $input in
-      # *) echo "错误选项：$REPLY" ;;
-      [qQ]) break ;;
-      *) docker stop "${docker_list[$input]}" ;;
-      esac
-    done
-    docker system prune -a -f &&
-      echo
-    echo "已下载的 Docker 镜像: "
-    docker images -a # 显示当前所有 docker 镜像
-    echo
-    echo "已安装的 Docker 容器: "
-    docker ps -a # 显示当前所有 docker 容器
-  else
-    echo "Docker 未安装!"
-  fi
-}
-
+# ----- 程序开始位置 -----
 github_proxy_set
 
 if grep "Ubuntu" /etc/issue; then # 判断系统发行版是否为 Ubuntu
   while true; do
     echo
-    echo "选择要进行的脚本: "
+    echo "选择要运行的脚本: "
     for i in "${!script_list[@]}"; do
-      echo "$i. ${script_list[$i]}" # 显示可安装容器列表
+      printf "%2s. %-20s%-s\n" "$i" "${script_list[$i]}" "${script_list_info[$i]}" # 显示可安装容器列表
     done
     echo "i. 初始化配置脚本"
     read -r -p "选择要进行的操作 (q:退出): " input
     case $input in
     [iI])
-      ${script_list[0]} &&
-        ${script_list[1]} &&
-        ${script_list[2]} &&
-        ${script_list[3]} &&
-        ${script_list[4]} &&
-        ${script_list[5]} &&
-        ${script_list[6]}
+      app_update_init &&
+        swap_set &&
+        term_config &&
+        docker_init &&
+        app_install &&
+        docker_install &&
+        apt_clean &&
+        sys_reboot
       ;;
     [qQ]) break ;;
     # *) echo "错误选项：$REPLY" ;;
