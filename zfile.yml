@@ -1,3 +1,6 @@
+# 在线云盘
+# 文件位置：$HOME/zfile.yml
+
 version: "3.3"
 services:
   zfile:

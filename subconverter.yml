@@ -1,3 +1,6 @@
+# 订阅转换后端
+# 文件位置：$HOME/subconverter.yml
+
 version: "3"
 services:
   subconverter:

@@ -1,2 +1,5 @@
+# Git 忽略提交规则
+# 文件位置：$HOME/.gitignore
+
 *test*
 *temp*

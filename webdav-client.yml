@@ -8,7 +8,7 @@ services:
     image: efrecon/webdav-client
     devices:
       - /dev/fuse
-    cap_add:
+    cap_add: # 添加容器权限
       - SYS_ADMIN
     security_opt:
       - apparmor=unconfined

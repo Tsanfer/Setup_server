@@ -1,11 +1,14 @@
+# 一款简单Linux面板服务
+# 文件位置：$HOME/mdserver-web.yml
+
 version: "3.3"
 services:
   mw-server:
     container_name: mw-server
-    privileged: true
+    privileged: true # 获取 root 权限
     ports:
       - "7200:7200"
-      - "80:80"
-      - "443:443"
-      - "888:888"
+      - "80:80" # web 服务器 HTTP
+      - "443:443" # web 服务器 HTTPS
+      - "888:888" # phpmyadmin
     image: "ddsderek/mw-server:latest"

@@ -8,15 +8,15 @@ script_list=("app_update_init" "swap_set" "term_config" "app_install" "app_remov
 script_list_info=("APT 软件更新、默认软件安装" "设置 swap 内存" "配置终端" "自选软件安装" "自选软件卸载" "安装，更新 Docker" "从 Docker compose 部署 docker 容器" "更新 docker 镜像和容器" "删除 docker 镜像和容器" "清理 APT 空间" "重启系统") # 脚本列表说明
 docker_list=("code-server" "nginx" "pure-ftpd" "web_object_detection" "zfile" "subconverter" "sub-web" "mdserver-web" "qinglong" "webdav-client")                                # 可安装容器列表
 docker_list_info=("在线 Web IDE" "Web 服务器" "FTP 服务器" "在线 web 目标识别" "在线云盘" "订阅转换后端" "订阅转换前端" "一款简单Linux面板服务" "定时任务管理面板" "Webdav 客户端，同步映射到宿主文件系统")                                   # 可安装容器列表说明
-app_list=("mw" "bt")
-app_list_info=("一款简单Linux面板服务" "aaPanel面板（宝塔国外版）")
+app_list=("mw" "bt")                                                                                                                                                             # 自选软件列表
+app_list_info=("一款简单Linux面板服务" "aaPanel面板（宝塔国外版）")                                                                                                                               # 自选软件列表说明
 
 # 设置 github 镜像域名
 function github_proxy_set() {
   while true; do
     read -rp "是否启用 Github 国内加速? [Y/n] " input
     case $input in
-    [yY])
+    [yY]) # 使用国内镜像域名
       # git config --global url."https://hub.fastgit.xyz/".insteadOf https://github.com/
       github_repo="ghproxy.com/https://github.com"
       github_raw="ghproxy.com/https://raw.githubusercontent.com"
@@ -29,7 +29,7 @@ function github_proxy_set() {
       break
       ;;
 
-    [nN])
+    [nN]) # 使用原始域名
       # git config --global --remove-section url."https://hub.fastgit.xyz/"
       github_repo="github.com"
       github_raw="raw.githubusercontent.com"
@@ -46,8 +46,8 @@ function app_update_init() {
   echo
   echo "---------- APT 软件更新、默认软件安装 ----------"
   echo
-  sudo apt update -y &&
-    sudo apt upgrade -y &&
+  sudo apt update -y &&    # 更新软件列表
+    sudo apt upgrade -y && # 更新所有软件
     # 默认安装：
     #   zsh - 命令行界面
     #   git - 版本控制工具
@@ -61,17 +61,17 @@ function app_update_init() {
     #   neofetch - 系统信息工具
     sudo apt install zsh git vim unzip bc curl wget rsync -y
 
-  if ! type btm >/dev/null 2>&1; then
-    wget https://$github_repo/ClementTsang/bottom/releases/download/0.6.8/bottom_0.6.8_amd64.deb -NP ~ &&
-      sudo dpkg -i ~/bottom_0.6.8_amd64.deb
+  if ! type btm >/dev/null 2>&1; then                                                                     # 如果没有安装 bottom
+    wget https://$github_repo/ClementTsang/bottom/releases/download/0.6.8/bottom_0.6.8_amd64.deb -NP ~ && # 从官方仓库下载安装包
+      sudo dpkg -i ~/bottom_0.6.8_amd64.deb                                                               # 使用 Debian 软件包管理器，安装 bottom
   else
     echo "已安装 bottom"
   fi
 
   if ! type neofetch >/dev/null 2>&1; then
     if ! sudo apt install neofetch -y; then
-      git clone https://$github_repo/dylanaraps/neofetch && # 编译安装
-        make -C ~/neofetch install
+      git clone https://$github_repo/dylanaraps/neofetch &&
+        make -C ~/neofetch install # 手动从 makefile 编译安装
     fi
   else
     echo "已安装 neofetch"
@@ -99,7 +99,7 @@ function swap_set() {
         awk '/swap/ {print $1}' /etc/fstab | xargs rm # 删除原有 swap 文件
         sed -i '/swap/d' /etc/fstab                   # 删除原有 swap 在 /etc/fstab 中的配置信息
         read -rp "设置 swap 大小 (单位 MB): " swap_size
-        dd if=/dev/zero of=/var/swap bs=1M count="$swap_size" # 生成新的 swap 文件（单位：Byte），大小 = bs*count
+        dd if=/dev/zero of=/var/swap bs=1M count="$swap_size" # 生成新的 swap 文件（原单位：Byte），大小 = bs*count
         chmod 600 /var/swap                                   # 更改 swap 文件权限，防止任意修改
         mkswap /var/swap                                      # 使用新的 swap 文件
         read -rp "设置内存剩余小于百分之多少时，才启用 swap (单位 %): " swap_enable_threshold
@@ -137,12 +137,12 @@ function term_config() {
 
   if [ ! -d ~/.oh-my-zsh ]; then
     echo "oh-my-zsh 未安装"
-    RUNZSH=no sh -c "$(curl -fsSL https://$github_raw/ohmyzsh/ohmyzsh/master/tools/install.sh)" &&                                               # 使用 oh-my-zsh 官方一键安装脚本
+    RUNZSH=no sh -c "$(curl -fsSL https://$github_raw/ohmyzsh/ohmyzsh/master/tools/install.sh)" &&                                               # 使用 oh-my-zsh 官方一键安装脚本（安装完成后，不自动运行）
       git clone https://$github_repo/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions &&             # 下载 zsh 自动建议插件
       git clone https://$github_repo/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting && # 下载 zsh 语法高亮插件
-      sed -i 's/^plugins=(/plugins=(\nzsh-autosuggestions\nzsh-syntax-highlighting\n/g' ~/.zshrc
+      sed -i 's/^plugins=(/plugins=(\nzsh-autosuggestions\nzsh-syntax-highlighting\n/g' ~/.zshrc                                                 # 加载插件到 zsh 启动配置文件
 
-    sudo wget https://$github_repo/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh &&
+    sudo wget https://$github_repo/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh && # 下载 oh-my-posh
       sudo chmod +x /usr/local/bin/oh-my-posh &&
       mkdir ~/.poshthemes &&
       wget https://$github_repo/JanDeDobbeleer/oh-my-posh/releases/latest/download/themes.zip -O ~/.poshthemes/themes.zip && # 下载 oh-my-posh 主题文件
@@ -153,7 +153,7 @@ function term_config() {
 
   elif ! oh-my-posh --version; then
     echo "oh-my-posh 未安装"
-    sudo wget https://$github_repo/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh &&
+    sudo wget https://$github_repo/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh && # 下载 oh-my-posh
       sudo chmod +x /usr/local/bin/oh-my-posh &&
       mkdir ~/.poshthemes &&
       wget https://$github_repo/JanDeDobbeleer/oh-my-posh/releases/latest/download/themes.zip -O ~/.poshthemes/themes.zip && # 下载 oh-my-posh 主题文件
@@ -183,6 +183,7 @@ function term_config() {
 
 }
 
+# 自选软件安装
 function app_install() {
   echo
   echo "---------- 自选软件安装 ----------"
@@ -211,7 +212,7 @@ function app_install() {
 
     echo
     for i in "${!app_list_info[@]}"; do
-      printf "%2s. %-20s%-s\n" "$i" "${app_list[$i]}" "${app_list_info[$i]}" # 显示可安装容器列表
+      printf "%2s. %-20s%-s\n" "$i" "${app_list[$i]}" "${app_list_info[$i]}" # 显示自选软件列表
     done
     read -r -p "选择需要安装的软件序号 (q:退出): " input
     case $input in
@@ -227,6 +228,7 @@ function app_install() {
   done
 }
 
+# 自选软件卸载
 function app_remove() {
   echo
   echo "---------- 自选软件卸载 ----------"
@@ -255,9 +257,9 @@ function app_remove() {
 
     echo
     for i in "${!app_list_info[@]}"; do
-      printf "%2s. %-20s%-s\n" "$i" "${app_list[$i]}" "${app_list_info[$i]}" # 显示可安装容器列表
+      printf "%2s. %-20s%-s\n" "$i" "${app_list[$i]}" "${app_list_info[$i]}" # 显示自选软件列表
     done
-    read -r -p "选择需要安装的软件序号 (q:退出): " input
+    read -r -p "选择需要卸载的软件序号 (q:退出): " input
     case $input in
     [0]) # mdserver-web: 一款简单Linux面板服务
       wget -O uninstall.sh https://raw.githubusercontent.com/midoks/mdserver-web/master/scripts/uninstall.sh && bash uninstall.sh
@@ -280,7 +282,7 @@ function docker_init() {
   if echo "$(echo "$release_ver" | bc) >= 18.04" | bc; then                                 # 如果版本符合要求
     echo "安装/更新 Docker 环境..."
 
-    if docker -v; then
+    if docker -v; then # 如果 docker 已安装
       echo "删除现有容器"
       docker rm -f "$(docker ps -q)"
     fi
@@ -306,7 +308,7 @@ function docker_init() {
 
 # 规范化 Docker 容器名
 function docker_container_name_conf() {
-  if grep "container_name" ~/"$1".yml >/dev/null; then
+  if grep "container_name" ~/"$1".yml >/dev/null; then          # 如果已有默认容器
     sed -i "s/container_name.*/container_name: $1/g" ~/"$1".yml # 修改容器默认名称
   else
     sed -i "s/.*image.*/&\n&/g" ~/"$1".yml &&
@@ -336,11 +338,11 @@ function docker_install() {
       [0]) # code-server: 在线 Web IDE
         read -rsp "设置密码: " password
         read -rsp "设置 sudo 密码: " sudo_password
-        echo "PASSWORD=$password" >~/"${docker_list[$input]}".env # 将输入的密码，保存至本地环境变量文件
+        echo "PASSWORD=$password" >~/"${docker_list[$input]}".env # 将输入的密码，保存至新建的环境变量文件
         echo "SUDO_PASSWORD=$sudo_password" >>~/"${docker_list[$input]}".env
         wget https://$github_raw/Tsanfer/Setup_server/main/"${docker_list[$input]}".yml -O ~/"${docker_list[$input]}".yml # 下载选择的 docker compose 文件
-        docker_container_name_conf "${docker_list[$input]}"
-        docker compose -f ~/"${docker_list[$input]}".yml --env-file ~/"${docker_list[$input]}".env up -d
+        docker_container_name_conf "${docker_list[$input]}"                                                               # 配置 docker compose 内的容器名
+        docker compose -f ~/"${docker_list[$input]}".yml --env-file ~/"${docker_list[$input]}".env up -d                  # 从环境变量文件，构建容器
         ;;
 
       [1]) # nginx: Web 服务器
@@ -370,15 +372,15 @@ function docker_install() {
           # curl -o ~/application.properties https://c.jun6.net/ZFILE/application.properties &&
           docker_container_name_conf "${docker_list[$input]}"
         while true; do
-          read -rp "是否从服务器同步配置信息？(Y/n): " choose
+          read -rp "是否从远程服务器同步配置信息？(Y/n): " choose
           case $choose in
           [yY])
-            read -rp "输入服务器地址（默认：39.105.22.218）: " rsync_ip
+            read -rp "输入远程服务器地址（默认：39.105.22.218）: " rsync_ip
             read -rp "输入 ssh 用户名（默认：root）: " rsync_user
-            read -rp "输入服务器中，配置文件所在文件夹的位置（以'/'结尾）（默认：/mnt/webdav/servers-conf/）: " rsync_dir
-            read -rp "输入服务器中，配置文件的文件名（.tar.gz格式）（默认：zfile-backup.tar.gz）: " rsync_filename
+            read -rp "输入远程服务器中，配置文件所在文件夹的位置（以'/'结尾）（默认：/mnt/webdav/servers-conf/）: " rsync_dir
+            read -rp "输入远程服务器中，配置文件的文件名（.tar.gz格式）（默认：zfile-backup.tar.gz）: " rsync_filename
             if [ -z "$rsync_ip" ]; then
-              rsync_ip="api.tsanfer.com:25500"
+              rsync_ip="39.105.22.218"
             fi
             if [ -z "$rsync_user" ]; then
               rsync_user="root"
@@ -396,8 +398,8 @@ function docker_install() {
             #     ├── db
             #     ├── file
             #     └── logs
-            rsync -av "$rsync_user"@"$rsync_ip":"${rsync_dir}""${rsync_filename}" ~/
-            tar -xzvf ~/"${rsync_filename}" -C ~/
+            rsync -av "$rsync_user"@"$rsync_ip":"${rsync_dir}""${rsync_filename}" ~/ # 从远程服务器同步配置文件
+            tar -xzvf ~/"${rsync_filename}" -C ~/                                    # 解压配置文件到指定目录（与 docker compose 文件中的配置对应）
             break
             ;;
 
@@ -492,7 +494,7 @@ function docker_update() {
     while true; do
 
       for i in "${!docker_list[@]}"; do
-        printf "%2s. %-20s%-s\n" "$i" "${docker_list[$i]}" "${docker_list_info[$i]}" # 显示可安装容器列表
+        printf "%2s. %-20s%-s\n" "$i" "${docker_list[$i]}" "${docker_list_info[$i]}" # 显示容器列表
       done
 
       read -r -p "选择需要更新的 Docker 容器序号 (q:退出): " input
@@ -533,17 +535,17 @@ function docker_remove() {
     while true; do
 
       for i in "${!docker_list[@]}"; do
-        printf "%2s. %-20s%-s\n" "$i" "${docker_list[$i]}" "${docker_list_info[$i]}" # 显示可安装容器列表
+        printf "%2s. %-20s%-s\n" "$i" "${docker_list[$i]}" "${docker_list_info[$i]}" # 显示容器列表
       done
 
       read -r -p "选择需要删除的 Docker 容器序号 (q:退出): " input
       case $input in
       # *) echo "错误选项：$REPLY" ;;
       [qQ]) break ;;
-      *) docker stop "${docker_list[$input]}" ;;
+      *) docker stop "${docker_list[$input]}" ;; # 停止指定容器
       esac
     done
-    docker system prune -a -f
+    docker system prune -a -f # 清除 docker 中未使用的数据（包括停止的容器以及其镜像）
     echo
     echo "已下载的 Docker 镜像: "
     docker images -a # 显示当前所有 docker 镜像
@@ -603,7 +605,7 @@ if grep "Ubuntu" /etc/issue; then # 判断系统发行版是否为 Ubuntu
     echo
     echo "选择要运行的脚本: "
     for i in "${!script_list[@]}"; do
-      printf "%2s. %-20s%-s\n" "$i" "${script_list[$i]}" "${script_list_info[$i]}" # 显示可安装容器列表
+      printf "%2s. %-20s%-s\n" "$i" "${script_list[$i]}" "${script_list_info[$i]}" # 显示脚本列表
     done
     echo "i. 初始化配置脚本"
     read -r -p "选择要进行的操作 (q:退出): " input
@@ -619,8 +621,8 @@ if grep "Ubuntu" /etc/issue; then # 判断系统发行版是否为 Ubuntu
         sys_reboot
       ;;
     [qQ]) break ;;
-    # *) echo "错误选项：$REPLY" ;;
     *) ${script_list[$input]} ;;
+      # *) echo "错误选项：$REPLY" ;;
     esac
   done
   echo "Done!!!"

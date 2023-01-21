@@ -9,12 +9,12 @@ services:
     environment:
       - PUID=1000 # 映射用户权限
       - PGID=1000 # 映射用户权限
-      - TZ=America/Los_Angeles
+      - TZ=America/Los_Angeles # 选择时区
       - PASSWORD # optional
       - SUDO_PASSWORD # optional
-      - DEFAULT_WORKSPACE=/config/workspace #optional
+      - DEFAULT_WORKSPACE=/config/workspace # optional 默认工作路径
     volumes:
-      - ~/code-server/config:/config
+      - ~/code-server/config:/config # 配置文件
     ports:
       - 8443:8443 # Web 端口
     restart: unless-stopped

@@ -1,3 +1,6 @@
+# 订阅转换前端
+# 文件位置：$HOME/sub-web.yml
+
 version: "3"
 services:
   subweb:
