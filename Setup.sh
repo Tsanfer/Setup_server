@@ -335,7 +335,7 @@ function docker_install() {
 
       read -r -p "选择需要安装的 Docker 容器序号 (q:退出): " input
       case $input in
-      [0]) # code-server: 在线 Web IDE
+      0) # code-server: 在线 Web IDE
         read -rsp "设置密码: " password
         read -rsp "设置 sudo 密码: " sudo_password
         echo "PASSWORD=$password" >~/"${docker_list[$input]}".env # 将输入的密码，保存至新建的环境变量文件
@@ -345,13 +345,13 @@ function docker_install() {
         docker compose -f ~/"${docker_list[$input]}".yml --env-file ~/"${docker_list[$input]}".env up -d                  # 从环境变量文件，构建容器
         ;;
 
-      [1]) # nginx: Web 服务器
+      1) # nginx: Web 服务器
         wget https://$github_raw/Tsanfer/Setup_server/main/"${docker_list[$input]}".yml -O ~/"${docker_list[$input]}".yml &&
           docker_container_name_conf "${docker_list[$input]}"
         docker compose -f ~/"${docker_list[$input]}".yml up -d
         ;;
 
-      [2]) # pure-ftpd: FTP 服务器
+      2) # pure-ftpd: FTP 服务器
         wget https://$github_raw/Tsanfer/Setup_server/main/"${docker_list[$input]}".yml -O ~/"${docker_list[$input]}".yml
         docker_container_name_conf "${docker_list[$input]}"
         read -rp "设置 ftp 用户名: " ftp_username
@@ -361,13 +361,13 @@ function docker_install() {
         docker compose -f ~/"${docker_list[$input]}".yml --env-file ~/"${docker_list[$input]}".env up -d
         ;;
 
-      [3]) # web_object_detection: 在线 web 目标识别
+      3) # web_object_detection: 在线 web 目标识别
         wget https://$github_raw/Tsanfer/Setup_server/main/"${docker_list[$input]}".yml -O ~/"${docker_list[$input]}".yml &&
           docker_container_name_conf "${docker_list[$input]}"
         docker compose -f ~/"${docker_list[$input]}".yml up -d
         ;;
 
-      [4]) # zfile: 在线云盘
+      4) # zfile: 在线云盘
         wget https://$github_raw/Tsanfer/Setup_server/main/"${docker_list[$input]}".yml -O ~/"${docker_list[$input]}".yml &&
           # curl -o ~/application.properties https://c.jun6.net/ZFILE/application.properties &&
           docker_container_name_conf "${docker_list[$input]}"
@@ -410,13 +410,13 @@ function docker_install() {
         docker compose -f ~/"${docker_list[$input]}".yml up -d
         ;;
 
-      [5]) # subconverter: 订阅转换后端
+      5) # subconverter: 订阅转换后端
         wget https://$github_raw/Tsanfer/Setup_server/main/"${docker_list[$input]}".yml -O ~/"${docker_list[$input]}".yml &&
           docker_container_name_conf "${docker_list[$input]}"
         docker compose -f ~/"${docker_list[$input]}".yml up -d
         ;;
 
-      [6]) # sub-web: 订阅转换前端
+      6) # sub-web: 订阅转换前端
         git clone https://github.com/CareyWang/sub-web ~/sub-web
         read -rp "设置订阅转换后端地址（默认：api.tsanfer.com:25500）：" sub_web_backend
         if [ -z "$sub_web_backend" ]; then
@@ -430,19 +430,19 @@ function docker_install() {
         docker compose -f ~/"${docker_list[$input]}".yml up -d
         ;;
 
-      [7]) # mdserver-web: 一款简单Linux面板服务
+      7) # mdserver-web: 一款简单Linux面板服务
         wget https://$github_raw/Tsanfer/Setup_server/main/"${docker_list[$input]}".yml -O ~/"${docker_list[$input]}".yml &&
           docker_container_name_conf "${docker_list[$input]}"
         docker compose -f ~/"${docker_list[$input]}".yml up -d
         ;;
 
-      [8]) # qinglong: 定时任务管理面板
+      8) # qinglong: 定时任务管理面板
         wget https://$github_raw/whyour/qinglong/master/docker/docker-compose.yml -O ~/"${docker_list[$input]}".yml &&
           docker_container_name_conf "${docker_list[$input]}"
         docker compose -f ~/"${docker_list[$input]}".yml up -d
         ;;
 
-      [9]) # webdav-client: Webdav 客户端，同步映射到宿主文件系统
+      9) # webdav-client: Webdav 客户端，同步映射到宿主文件系统
         wget https://$github_raw/Tsanfer/Setup_server/main/"${docker_list[$input]}".yml -O ~/"${docker_list[$input]}".yml &&
           docker_container_name_conf "${docker_list[$input]}"
 
@@ -462,7 +462,7 @@ function docker_install() {
         docker compose -f ~/"${docker_list[$input]}".yml --env-file ~/"${docker_list[$input]}".env up -d
         ;;
 
-      [10]) # watchtower: 自动化更新 Docker 容器
+      10) # watchtower: 自动化更新 Docker 容器
         wget https://$github_raw/whyour/qinglong/master/docker/docker-compose.yml -O ~/"${docker_list[$input]}".yml &&
           docker_container_name_conf "${docker_list[$input]}"
         docker compose -f ~/"${docker_list[$input]}".yml up -d
