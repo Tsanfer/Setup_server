@@ -463,7 +463,7 @@ function docker_install() {
         ;;
 
       10) # watchtower: 自动化更新 Docker 容器
-        wget https://$github_raw/whyour/qinglong/master/docker/docker-compose.yml -O ~/"${docker_list[$input]}".yml &&
+        wget https://$github_raw/Tsanfer/Setup_server/main/"${docker_list[$input]}".yml -O ~/"${docker_list[$input]}".yml &&
           docker_container_name_conf "${docker_list[$input]}"
         docker compose -f ~/"${docker_list[$input]}".yml up -d
         ;;
