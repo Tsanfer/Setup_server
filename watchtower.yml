@@ -1,0 +1,8 @@
+# 自动化更新 Docker 镜像和容器
+
+version: "3"
+services:
+  watchtower:
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock # 与 Docker API 交互，用于监控容器运行情况

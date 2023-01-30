@@ -6,8 +6,8 @@ github_raw="raw.githubusercontent.com" # 默认 github raw 域名
 
 script_list=("app_update_init" "swap_set" "term_config" "app_install" "app_remove" "docker_init" "docker_install" "docker_update" "docker_remove" "apt_clean" "sys_reboot")      # 脚本列表
 script_list_info=("APT 软件更新、默认软件安装" "设置 swap 内存" "配置终端" "自选软件安装" "自选软件卸载" "安装，更新 Docker" "从 Docker compose 部署 docker 容器" "更新 docker 镜像和容器" "删除 docker 镜像和容器" "清理 APT 空间" "重启系统") # 脚本列表说明
-docker_list=("code-server" "nginx" "pure-ftpd" "web_object_detection" "zfile" "subconverter" "sub-web" "mdserver-web" "qinglong" "webdav-client")                                # 可安装容器列表
-docker_list_info=("在线 Web IDE" "Web 服务器" "FTP 服务器" "在线 web 目标识别" "在线云盘" "订阅转换后端" "订阅转换前端" "一款简单Linux面板服务" "定时任务管理面板" "Webdav 客户端，同步映射到宿主文件系统")                                   # 可安装容器列表说明
+docker_list=("code-server" "nginx" "pure-ftpd" "web_object_detection" "zfile" "subconverter" "sub-web" "mdserver-web" "qinglong" "webdav-client" "watchtower")                   # 可安装容器列表
+docker_list_info=("在线 Web IDE" "Web 服务器" "FTP 服务器" "在线 web 目标识别" "在线云盘" "订阅转换后端" "订阅转换前端" "一款简单Linux面板服务" "定时任务管理面板" "Webdav 客户端，同步映射到宿主文件系统" "自动化更新 Docker 镜像和容器")                 # 可安装容器列表说明
 app_list=("mw" "bt")                                                                                                                                                             # 自选软件列表
 app_list_info=("一款简单Linux面板服务" "aaPanel面板（宝塔国外版）")                                                                                                                               # 自选软件列表说明
 
@@ -71,7 +71,7 @@ function app_update_init() {
   if ! type neofetch >/dev/null 2>&1; then
     if ! sudo apt install neofetch -y; then
       git clone https://$github_repo/dylanaraps/neofetch &&
-        make -C ~/neofetch install # 手动从 makefile 编译安装
+        sudo make -C ~/neofetch install # 手动从 makefile 编译安装
     fi
   else
     echo "已安装 neofetch"
@@ -460,6 +460,12 @@ function docker_install() {
         echo "WEBDRIVE_USERNAME=$webdav_user" >>~/"${docker_list[$input]}".env
         echo "WEBDRIVE_PASSWORD=$webdav_pass" >>~/"${docker_list[$input]}".env
         docker compose -f ~/"${docker_list[$input]}".yml --env-file ~/"${docker_list[$input]}".env up -d
+        ;;
+
+      [10]) # watchtower: 自动化更新 Docker 容器
+        wget https://$github_raw/whyour/qinglong/master/docker/docker-compose.yml -O ~/"${docker_list[$input]}".yml &&
+          docker_container_name_conf "${docker_list[$input]}"
+        docker compose -f ~/"${docker_list[$input]}".yml up -d
         ;;
 
       [qQ])
