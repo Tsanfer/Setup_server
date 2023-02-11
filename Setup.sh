@@ -297,9 +297,10 @@ function docker_init() {
       curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg && # 添加 Docker 官方的 GPG 密钥
       echo \
         "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-    $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list >/dev/null && # 重新建立 apt 仓库
-      sudo apt-get update -y &&                                                             # 更新 apt 仓库
-      sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y   # 安装 docker 相关软件
+    $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list >/dev/null &&  # 重新建立 apt 仓库
+      sudo apt-get update -y &&                                                              # 更新 apt 仓库
+      sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y && # 安装 docker 相关软件
+      service docker restart 
     echo "安装/更新 docker 环境完成!"
   else
     echo "Ubuntu 版本低于 18.04 无法安装 Docker"
