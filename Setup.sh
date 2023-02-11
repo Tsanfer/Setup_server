@@ -59,7 +59,7 @@ function app_update_init() {
     #   rsync - 文件同步
     #   bottom - 图形化系统监控
     #   neofetch - 系统信息工具
-    sudo apt install zsh git vim unzip bc curl wget rsync -y
+    sudo apt install zsh git vim unzip bc curl wget rsync jq -y
 
   if ! type btm >/dev/null 2>&1; then                                                                     # 如果没有安装 bottom
     wget https://$github_repo/ClementTsang/bottom/releases/download/0.6.8/bottom_0.6.8_amd64.deb -NP ~ && # 从官方仓库下载安装包
