@@ -47,7 +47,7 @@ function app_update_init() {
   echo "---------- APT 软件更新、默认软件安装 ----------"
   echo
   sudo apt install curl wget lsb-release -y
-  read -rp "是否使用 LinuxMirrors 脚本，更改更换国内软件源? [Y/n] " input
+  read -rp "是否使用 LinuxMirrors 脚本，更换国内软件源? [Y/n] " input
   while true; do
     case $input in
       [yY])
@@ -407,7 +407,7 @@ function docker_install() {
                   rsync_user="root"
                 fi
                 if [ -z "$rsync_dir" ]; then
-                  rsync_dir="/mnt/webdav/servers-conf/"
+                  rsync_dir="/mnt/webdav/servers-conf/zfile/"
                 fi
                 if [ -z "$rsync_filename" ]; then
                   rsync_filename="zfile-backup.tar.gz"
