@@ -20,7 +20,7 @@ function github_proxy_set() {
       # git config --global url."https://hub.fastgit.xyz/".insteadOf https://github.com/
       github_repo="ghproxy.com/https://github.com"
       github_raw="ghproxy.com/https://raw.githubusercontent.com"
-      # wget https://${github_download}/dotnetcore/FastGithub/releases/latest/download/fastgithub_linux-x64.zip -O ~ &&
+      # wget https://${github_download}/dotnetcore/FastGithub/releases/latest/download/fastgithub_linux-x64.zip -P ~ &&
       #   unzip ~/fastgithub_linux-x64.zip
       # sudo ~/fastgithub_linux-x64/fastgithub start &&
       #   export http_proxy=127.0.0.1:38457
@@ -81,7 +81,7 @@ function app_update_init() {
   sudo apt install zsh git vim unzip bc rsync jq -y
 
   if ! type btm >/dev/null 2>&1; then                                                                 # 如果没有安装 bottom
-    wget https://$github_repo/ClementTsang/bottom/releases/download/0.6.8/bottom_0.6.8_amd64.deb -o ~ # 从官方仓库下载安装包
+    wget https://$github_repo/ClementTsang/bottom/releases/download/0.6.8/bottom_0.6.8_amd64.deb -P ~ # 从官方仓库下载安装包
     sudo dpkg -i ~/bottom_0.6.8_amd64.deb                                                             # 使用 Debian 软件包管理器，安装 bottom
   else
     echo "已安装 bottom"
@@ -97,7 +97,7 @@ function app_update_init() {
   fi
 
   # 下载 vim 自定义配置文件
-  wget https://$github_raw/Tsanfer/Setup_server/main/.vimrc -o ~
+  wget https://$github_raw/Tsanfer/Setup_server/main/.vimrc -P ~
 
   neofetch
   read -rp "按回车键继续"
