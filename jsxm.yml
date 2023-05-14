@@ -1,0 +1,11 @@
+# FastTracker 2 .xm module player in Javascript
+# File location：$HOME/fsxm.yml
+
+version: "3"
+services:
+  fsxm:
+    image: tsanfer/jsxm:latest
+    container_name: jsxm
+    ports:
+      - 8081:8080
+    restart: unless-stopped
