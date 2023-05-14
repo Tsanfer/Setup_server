@@ -36,7 +36,7 @@
   | [青龙面板](https://github.com/whyour/qinglong)                          | 定时任务管理面板                      | `5700`                                |
   | [webdav-client](https://github.com/efrecon/docker-webdav-client)        | Webdav 客户端，同步映射到宿主文件系统 |                                       |
   | [watchtower](https://github.com/containrrr/watchtower)                  | 自动化更新 Docker 镜像和容器          |                                       |
-  | [jsxm](https://github.com/a1k0n/jsxm)                                   | Web 在线 xm 音乐播放器器              |                                       |
+  | [jsxm](https://github.com/a1k0n/jsxm)                                   | Web 在线 xm 音乐播放器器              | `8081`                                |
 
 - 清理 APT 空间
 
