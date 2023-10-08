@@ -4,7 +4,7 @@
 version: "3"
 services:
   code-server:
-    image: lscr.io/linuxserver/code-server:latest
+    image: linuxserver/code-server:latest
     container_name: code-server
     environment:
       - PUID=1000 # 映射用户权限
