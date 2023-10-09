@@ -13,7 +13,7 @@ services:
     security_opt:
       - apparmor=unconfined
     volumes:
-      - /mnt/webdav:/mnt/webdrive:rshared # 挂载目录
+      - ${WEBDRIVE_LOCAL_PATH}:/mnt/webdrive:rshared # 挂载目录
     environment:
       - WEBDRIVE_URL # webdav 服务器地址
       - WEBDRIVE_USERNAME # webdav 用户名
