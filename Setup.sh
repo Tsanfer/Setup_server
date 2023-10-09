@@ -469,16 +469,21 @@ function docker_install() {
         read -rp "输入 webdav 服务器地址(url)（默认：https://dav.jianguoyun.com/dav/我的坚果云）: " webdav_url
         read -rp "输入 webdav 用户名（默认：a1124851454@gmail.com）: " webdav_user
         read -rsp "输入 webdav 密码: " webdav_pass
+        read -rp "输入 webdav 本地目录（默认：/mnt/webdav）: " webdav_local_path
         if [ -z "$webdav_url" ]; then
           webdav_url="https://dav.jianguoyun.com/dav/我的坚果云"
         fi
         if [ -z "$webdav_user" ]; then
           webdav_user="a1124851454@gmail.com"
         fi
-
+        if [ -z "$webdav_local_path" ]; then
+          webdav_local_path="/mnt/webdav"
+        fi
+        
         echo "WEBDRIVE_URL=$webdav_url" >~/"${docker_list[$input]}".env
         echo "WEBDRIVE_USERNAME=$webdav_user" >>~/"${docker_list[$input]}".env
         echo "WEBDRIVE_PASSWORD=$webdav_pass" >>~/"${docker_list[$input]}".env
+        echo "WEBDRIVE_LOCAL_PATH=$webdav_local_path" >>~/"${docker_list[$input]}".env
         docker compose -f ~/"${docker_list[$input]}".yml --env-file ~/"${docker_list[$input]}".env up -d
         ;;
 
