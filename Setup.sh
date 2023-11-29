@@ -21,7 +21,7 @@ function github_proxy_set() {
       # github_repo="ghproxy.com/https://github.com"
       # github_raw="ghproxy.com/https://raw.githubusercontent.com"
       github_repo="githubfast.com"
-      github_raw="raw.fastgit.org"
+      github_raw="raw.staticdn.net"
      # wget https://${github_download}/dotnetcore/FastGithub/releases/latest/download/fastgithub_linux-x64.zip -P ~ &&
       #   unzip ~/fastgithub_linux-x64.zip
       # sudo ~/fastgithub_linux-x64/fastgithub start &&
