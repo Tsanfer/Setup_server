@@ -18,9 +18,11 @@ function github_proxy_set() {
     case $input in
     [yY]) # 使用国内镜像域名
       # git config --global url."https://hub.fastgit.xyz/".insteadOf https://github.com/
-      github_repo="ghproxy.com/https://github.com"
-      github_raw="ghproxy.com/https://raw.githubusercontent.com"
-      # wget https://${github_download}/dotnetcore/FastGithub/releases/latest/download/fastgithub_linux-x64.zip -P ~ &&
+      # github_repo="ghproxy.com/https://github.com"
+      # github_raw="ghproxy.com/https://raw.githubusercontent.com"
+      github_repo="githubfast.com"
+      github_raw="raw.fastgit.org"
+     # wget https://${github_download}/dotnetcore/FastGithub/releases/latest/download/fastgithub_linux-x64.zip -P ~ &&
       #   unzip ~/fastgithub_linux-x64.zip
       # sudo ~/fastgithub_linux-x64/fastgithub start &&
       #   export http_proxy=127.0.0.1:38457
