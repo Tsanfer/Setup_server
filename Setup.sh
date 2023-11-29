@@ -391,42 +391,42 @@ function docker_install() {
         wget https://$github_raw/Tsanfer/Setup_server/main/"${docker_list[$input]}".yml -O ~/"${docker_list[$input]}".yml &&
           # curl -o ~/application.properties https://c.jun6.net/ZFILE/application.properties &&
           docker_container_name_conf "${docker_list[$input]}"
-        while true; do
-          read -rp "是否从远程服务器同步配置信息？(Y/n): " choose
-          case $choose in
-          [yY])
-            read -rp "输入远程服务器地址（默认：39.105.22.218）: " rsync_ip
-            read -rp "输入 ssh 用户名（默认：root）: " rsync_user
-            read -rp "输入远程服务器中，配置文件所在文件夹的位置（以'/'结尾）（默认：/mnt/webdav/servers-conf/）: " rsync_dir
-            read -rp "输入远程服务器中，配置文件的文件名（.tar.gz格式）（默认：zfile-backup.tar.gz）: " rsync_filename
-            if [ -z "$rsync_ip" ]; then
-              rsync_ip="39.105.22.218"
-            fi
-            if [ -z "$rsync_user" ]; then
-              rsync_user="root"
-            fi
-            if [ -z "$rsync_dir" ]; then
-              rsync_dir="/mnt/webdav/servers-conf/zfile/"
-            fi
-            if [ -z "$rsync_filename" ]; then
-              rsync_filename="zfile-backup.tar.gz"
-            fi
-            # 压缩包内目录结构
-            # .
-            # ├── application.properties
-            # └── zfile
-            #     ├── db
-            #     ├── file
-            #     └── logs
-            rsync -av "$rsync_user"@"$rsync_ip":"${rsync_dir}""${rsync_filename}" ~/ # 从远程服务器同步配置文件
-            tar -xzvf ~/"${rsync_filename}" -C ~/                                    # 解压配置文件到指定目录（与 docker compose 文件中的配置对应）
-            break
-            ;;
+        # while true; do
+        #   read -rp "是否从远程服务器同步配置信息？(Y/n): " choose
+        #   case $choose in
+        #   [yY])
+        #     read -rp "输入远程服务器地址（默认：39.105.22.218）: " rsync_ip
+        #     read -rp "输入 ssh 用户名（默认：root）: " rsync_user
+        #     read -rp "输入远程服务器中，配置文件所在文件夹的位置（以'/'结尾）（默认：/mnt/webdav/servers-conf/）: " rsync_dir
+        #     read -rp "输入远程服务器中，配置文件的文件名（.tar.gz格式）（默认：zfile-backup.tar.gz）: " rsync_filename
+        #     if [ -z "$rsync_ip" ]; then
+        #       rsync_ip="39.105.22.218"
+        #     fi
+        #     if [ -z "$rsync_user" ]; then
+        #       rsync_user="root"
+        #     fi
+        #     if [ -z "$rsync_dir" ]; then
+        #       rsync_dir="/mnt/webdav/servers-conf/zfile/"
+        #     fi
+        #     if [ -z "$rsync_filename" ]; then
+        #       rsync_filename="zfile-backup.tar.gz"
+        #     fi
+        #     # 压缩包内目录结构
+        #     # .
+        #     # ├── application.properties
+        #     # └── zfile
+        #     #     ├── db
+        #     #     ├── file
+        #     #     └── logs
+        #     rsync -av "$rsync_user"@"$rsync_ip":"${rsync_dir}""${rsync_filename}" ~/ # 从远程服务器同步配置文件
+        #     tar -xzvf ~/"${rsync_filename}" -C ~/                                    # 解压配置文件到指定目录（与 docker compose 文件中的配置对应）
+        #     break
+        #     ;;
 
-          [nN]) break ;;
-          *) echo "错误选项：$REPLY" ;;
-          esac
-        done
+        #   [nN]) break ;;
+        #   *) echo "错误选项：$REPLY" ;;
+        #   esac
+        # done
         docker compose -f ~/"${docker_list[$input]}".yml up -d
         ;;
 
