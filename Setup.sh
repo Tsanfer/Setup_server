@@ -8,8 +8,8 @@ script_list=("app_update_init" "swap_set" "term_config" "app_install" "app_remov
 script_list_info=("APT 软件更新、默认软件安装" "设置 swap 内存" "配置终端" "自选软件安装" "自选软件卸载" "安装，更新 Docker" "从 Docker compose 部署 docker 容器" "更新 docker 镜像和容器" "删除 docker 镜像和容器" "清理 APT 空间" "重启系统")   # 脚本列表说明
 docker_list=("code-server" "nginx" "pure-ftpd" "web_object_detection" "zfile" "subconverter" "sub-web" "mdserver-web" "qinglong" "webdav-client" "watchtower" "jsxm")              # 可安装容器列表
 docker_list_info=("在线 Web IDE" "Web 服务器" "FTP 服务器" "在线 web 目标识别" "在线云盘" "订阅转换后端" "订阅转换前端" "一款简单Linux面板服务" "定时任务管理面板" "Webdav 客户端，同步映射到宿主文件系统" "自动化更新 Docker 镜像和容器" "Web 在线 xm 音乐播放器") # 可安装容器列表说明
-app_list=("mw" "bt")                                                                                                                                                               # 自选软件列表
-app_list_info=("一款简单Linux面板服务" "aaPanel面板（宝塔国外版）")                                                                                                                                 # 自选软件列表说明
+app_list=("mw" "bt" "1pctl")                                                                                                                                                               # 自选软件列表
+app_list_info=("一款简单Linux面板服务" "aaPanel面板（宝塔国外版）" "现代化、开源的 Linux 服务器运维管理面板")                                                                                                                                 # 自选软件列表说明
 
 # 设置 github 镜像域名
 function github_proxy_set() {
@@ -228,6 +228,12 @@ function app_install() {
         fi
         ;;
 
+      [2]) # 1pctl: 现代化、开源的 Linux 服务器运维管理面板
+        if type "${app_list[$i]}" >/dev/null 2>&1; then
+          echo "${app_list_info[$i]} 已安装"
+        fi
+        ;;
+
       esac
     done
 
@@ -242,6 +248,9 @@ function app_install() {
       ;;
     [1]) # aaPanel: 宝塔面板国外版
       wget -O install.sh http://www.aapanel.com/script/install-ubuntu_6.0_en.sh && sudo bash install.sh aapanel
+      ;;
+    [2]) # 1Panel: 现代化、开源的 Linux 服务器运维管理面板
+      curl -sSL https://resource.fit2cloud.com/1panel/package/quick_start.sh -o quick_start.sh && sudo bash quick_start.sh
       ;;
     [qQ]) break ;;
     *) echo "错误选项：$REPLY" ;;
@@ -273,6 +282,12 @@ function app_remove() {
         fi
         ;;
 
+      [2]) # 1Panel: 现代化、开源的 Linux 服务器运维管理面板
+        if type "${app_list[$i]}" >/dev/null 2>&1; then
+          echo "${app_list_info[$i]} 已安装"
+        fi
+        ;;
+
       esac
     done
 
@@ -287,6 +302,9 @@ function app_remove() {
       ;;
     [1]) # aaPanel: 宝塔面板国外版
       wget http://download.bt.cn/install/bt-uninstall.sh && sh bt-uninstall.sh
+      ;;
+    [1]) # 1Panel: 现代化、开源的 Linux 服务器运维管理面板
+      1pctl uninstall
       ;;
     [qQ]) break ;;
     *) echo "错误选项：$REPLY" ;;
