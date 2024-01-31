@@ -57,11 +57,11 @@ bash -c "$(wget https://raw.githubusercontent.com/Tsanfer/Setup_server/main/Setu
 ### 国内使用
 
 ```bash
-bash -c "$(curl -fsSL https://ghproxy.com/https://raw.githubusercontent.com/Tsanfer/Setup_server/main/Setup.sh)"
+bash -c "$(curl -fsSL https://raw.staticdn.net/Tsanfer/Setup_server/main/Setup.sh)"
 ```
 
 或
 
 ```bash
-bash -c "$(wget https://ghproxy.com/https://raw.githubusercontent.com/Tsanfer/Setup_server/main/Setup.sh -O -)"
+bash -c "$(wget https://raw.staticdn.net/Tsanfer/Setup_server/main/Setup.sh -O -)"
 ```
