@@ -9,9 +9,9 @@
 - APT 软件更新、默认软件安装
   |部分默认软件|功能|命令|
   |--|--|--|
-  |[rsync](https://github.com/coder/code-server)|文件同步|`rsync`|
-  |[bottom](https://hub.docker.com/_/nginx)|图形化系统监控|`btm`|
-  |[neofetch](https://hub.docker.com/r/stilliard/pure-ftpd)|系统信息工具|`neofetch`|
+  |[rsync](https://github.com/WayneD/rsync)|文件同步|`rsync`|
+  |[bottom](https://github.com/ClementTsang/bottom)|图形化系统监控|`btm`|
+  |[neofetch](https://github.com/dylanaraps/neofetch)|系统信息工具|`neofetch`|
 - 配置 swap 内存
 - 配置终端
   - [Oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh) 及插件安装（加强 zsh 的功能）
