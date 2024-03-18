@@ -185,11 +185,10 @@ function term_config() {
 
   else
     while true; do
-      read -rp "已安装 oh-my-posh, 是否更新版本? [Y/n] " input
+      read -rp "已安装 oh-my-zsh 与 oh-my-posh, 是否卸载? [Y/n] " input
       case $input in
       [yY])
-        sudo wget https://$github_repo/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh
-        sudo chmod +x /usr/local/bin/oh-my-posh
+        rm -rf ~/.oh-my-zsh ~/.oh-my-posh
         break
         ;;
 
