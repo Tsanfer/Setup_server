@@ -175,7 +175,7 @@ function term_config() {
   elif ! oh-my-posh --version; then
     echo "oh-my-posh 未安装"
     if [ "$github_repo" = "github.com" ]; then
-      curl -s https://ohmyposh.dev/install.sh | zsh -s
+      curl -s https://ohmyposh.dev/install.sh | bash -s
     else
       echo "国内安装方式，安装 oh-my-posh 可能无法成功，尝试安装"
       sudo wget https://$github_repo/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh && # 下载 oh-my-posh
