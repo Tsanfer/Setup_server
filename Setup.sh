@@ -162,10 +162,9 @@ function term_config() {
       git clone https://$github_repo/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions &&             # 下载 zsh 自动建议插件
       git clone https://$github_repo/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting && # 下载 zsh 语法高亮插件
       sed -i 's/^plugins=(/plugins=(\nzsh-autosuggestions\nzsh-syntax-highlighting\n/g' ~/.zshrc                                                 # 加载插件到 zsh 启动配置文件
-  fi
 
-  if ! oh-my-posh --version; then
-    echo "oh-my-posh 未安装"
+    # if ! oh-my-posh --version; then
+    #   echo "oh-my-posh 未安装"
     if [ "$github_repo" = "github.com" ]; then
       curl -s https://ohmyposh.dev/install.sh | bash -s
     else
@@ -179,10 +178,10 @@ function term_config() {
         rm ~/.poshthemes/themes.zip
     fi
     sed -i '$a\eval "$(oh-my-posh init zsh --config ~/.poshthemes/craver.omp.json)"' ~/.zshrc # 每次进入 zsh 时，自动打开 oh-my-posh 主题
-
+  
   else
     while true; do
-      read -rp "已安装 oh-my-posh, 是否卸载? [Y/n] " input
+      read -rp "已安装 oh-my-zsh, 是否卸载? [Y/n] " input
       case $input in
       [yY])
         rm -rf ~/.oh-my-zsh ~/.oh-my-posh
@@ -197,6 +196,9 @@ function term_config() {
       esac
     done
   fi
+
+
+
 
 }
 
