@@ -179,6 +179,7 @@ function term_config() {
         rm ~/.poshthemes/themes.zip
     fi
     sed -i '$a\eval "$(oh-my-posh init zsh --config ~/.poshthemes/craver.omp.json)"' ~/.zshrc # 每次进入 zsh 时，自动打开 oh-my-posh 主题
+  fi
 
   else
     while true; do
