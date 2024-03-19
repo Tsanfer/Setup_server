@@ -163,15 +163,6 @@ function term_config() {
       git clone https://$github_repo/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting && # 下载 zsh 语法高亮插件
       sed -i 's/^plugins=(/plugins=(\nzsh-autosuggestions\nzsh-syntax-highlighting\n/g' ~/.zshrc                                                 # 加载插件到 zsh 启动配置文件
 
-    sudo wget https://$github_repo/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh && # 下载 oh-my-posh
-      sudo chmod +x /usr/local/bin/oh-my-posh &&
-      mkdir ~/.poshthemes &&
-      wget https://$github_repo/JanDeDobbeleer/oh-my-posh/releases/latest/download/themes.zip -O ~/.poshthemes/themes.zip && # 下载 oh-my-posh 主题文件
-      unzip ~/.poshthemes/themes.zip -d ~/.poshthemes &&
-      chmod u+rw ~/.poshthemes/*.omp.* &&
-      rm ~/.poshthemes/themes.zip &&
-      sed -i '$a\eval "$(oh-my-posh init zsh --config ~/.poshthemes/craver.omp.json)"' ~/.zshrc # 每次进入 zsh 时，自动打开 oh-my-posh 主题
-
   elif ! oh-my-posh --version; then
     echo "oh-my-posh 未安装"
     if [ "$github_repo" = "github.com" ]; then
