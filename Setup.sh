@@ -174,14 +174,19 @@ function term_config() {
 
   elif ! oh-my-posh --version; then
     echo "oh-my-posh 未安装"
-    sudo wget https://$github_repo/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh && # 下载 oh-my-posh
-      sudo chmod +x /usr/local/bin/oh-my-posh &&
-      mkdir ~/.poshthemes &&
-      wget https://$github_repo/JanDeDobbeleer/oh-my-posh/releases/latest/download/themes.zip -O ~/.poshthemes/themes.zip && # 下载 oh-my-posh 主题文件
-      unzip ~/.poshthemes/themes.zip -d ~/.poshthemes &&
-      chmod u+rw ~/.poshthemes/*.omp.* &&
-      rm ~/.poshthemes/themes.zip &&
-      sed -i '$a\eval "$(oh-my-posh init zsh --config ~/.poshthemes/craver.omp.json)"' ~/.zshrc # 每次进入 zsh 时，自动打开 oh-my-posh 主题
+    if [ "$github_repo" = "github.com" ]; then
+      curl -s https://ohmyposh.dev/install.sh | zsh -s
+    else
+      echo "国内安装方式，安装 oh-my-posh 可能无法成功，尝试安装"
+      sudo wget https://$github_repo/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh && # 下载 oh-my-posh
+        sudo chmod +x /usr/local/bin/oh-my-posh &&
+        mkdir ~/.poshthemes &&
+        wget https://$github_repo/JanDeDobbeleer/oh-my-posh/releases/latest/download/themes.zip -O ~/.poshthemes/themes.zip && # 下载 oh-my-posh 主题文件
+        unzip ~/.poshthemes/themes.zip -d ~/.poshthemes &&
+        chmod u+rw ~/.poshthemes/*.omp.* &&
+        rm ~/.poshthemes/themes.zip
+    fi
+    sed -i '$a\eval "$(oh-my-posh init zsh --config ~/.poshthemes/craver.omp.json)"' ~/.zshrc # 每次进入 zsh 时，自动打开 oh-my-posh 主题
 
   else
     while true; do
