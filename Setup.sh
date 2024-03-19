@@ -162,8 +162,9 @@ function term_config() {
       git clone https://$github_repo/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions &&             # 下载 zsh 自动建议插件
       git clone https://$github_repo/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting && # 下载 zsh 语法高亮插件
       sed -i 's/^plugins=(/plugins=(\nzsh-autosuggestions\nzsh-syntax-highlighting\n/g' ~/.zshrc                                                 # 加载插件到 zsh 启动配置文件
+  fi
 
-  elif ! oh-my-posh --version; then
+  if ! oh-my-posh --version; then
     echo "oh-my-posh 未安装"
     if [ "$github_repo" = "github.com" ]; then
       curl -s https://ohmyposh.dev/install.sh | bash -s
