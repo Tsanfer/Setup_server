@@ -508,7 +508,12 @@ function docker_install() {
       10) # watchtower: 自动化更新 Docker 容器
         wget https://$github_raw/Tsanfer/Setup_server/main/"${docker_list[$input]}".yml -O ~/"${docker_list[$input]}".yml &&
           docker_container_name_conf "${docker_list[$input]}"
-        docker compose -f ~/"${docker_list[$input]}".yml up -d
+        read -rp "设置 Docker 镜像检查更新频率，单位：秒（默认：30）：" update_interval
+        if [ -z "$update_interval" ]; then
+          update_interval="30"
+        fi
+        echo "INTERVAL=$update_interval" >~/"${docker_list[$input]}".env
+        docker compose -f ~/"${docker_list[$input]}".yml --env-file ~/"${docker_list[$input]}".env up -d
         ;;
 
       11) # jsxm: Web xm 音乐播放器
