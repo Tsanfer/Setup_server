@@ -4,12 +4,12 @@
 github_repo="github.com"               # 默认 github 仓库域名
 github_raw="raw.githubusercontent.com" # 默认 github raw 域名
 
-script_list=("app_update_init" "swap_set" "term_config" "app_install" "app_remove" "docker_init" "docker_install" "docker_update" "docker_remove" "apt_clean" "sys_reboot")        # 脚本列表
-script_list_info=("APT 软件更新、默认软件安装" "设置 swap 内存" "配置终端" "自选软件安装" "自选软件卸载" "安装，更新 Docker" "从 Docker compose 部署 docker 容器" "更新 docker 镜像和容器" "删除 docker 镜像和容器" "清理 APT 空间" "重启系统")   # 脚本列表说明
-docker_list=("code-server" "nginx" "pure-ftpd" "web_object_detection" "zfile" "subconverter" "sub-web" "mdserver-web" "qinglong" "webdav-client" "watchtower" "jsxm")              # 可安装容器列表
+script_list=("app_update_init" "swap_set" "term_config" "app_install" "app_remove" "docker_init" "docker_install" "docker_update" "docker_remove" "apt_clean" "sys_reboot")                                                                           # 脚本列表
+script_list_info=("APT 软件更新、默认软件安装" "设置 swap 内存" "配置终端" "自选软件安装" "自选软件卸载" "安装，更新 Docker" "从 Docker compose 部署 docker 容器" "更新 docker 镜像和容器" "删除 docker 镜像和容器" "清理 APT 空间" "重启系统")                  # 脚本列表说明
+docker_list=("code-server" "nginx" "pure-ftpd" "web_object_detection" "zfile" "subconverter" "sub-web" "mdserver-web" "qinglong" "webdav-client" "watchtower" "jsxm")                                                                                 # 可安装容器列表
 docker_list_info=("在线 Web IDE" "Web 服务器" "FTP 服务器" "在线 web 目标识别" "在线云盘" "订阅转换后端" "订阅转换前端" "一款简单Linux面板服务" "定时任务管理面板" "Webdav 客户端，同步映射到宿主文件系统" "自动化更新 Docker 镜像和容器" "Web 在线 xm 音乐播放器") # 可安装容器列表说明
-app_list=("mw" "bt" "1pctl")                                                                                                                                                               # 自选软件列表
-app_list_info=("一款简单Linux面板服务" "aaPanel面板（宝塔国外版）" "现代化、开源的 Linux 服务器运维管理面板")                                                                                                                                 # 自选软件列表说明
+app_list=("mw" "bt" "1pctl" "kubesphere")                                                                                                                                                                                                             # 自选软件列表
+app_list_info=("一款简单Linux面板服务" "aaPanel面板（宝塔国外版）" "现代化、开源的 Linux 服务器运维管理面板" "在 Kubernetes 之上构建的面向云原生应用的分布式操作系统")                                                                                          # 自选软件列表说明
 
 # 设置 github 镜像域名
 function github_proxy_set() {
@@ -253,6 +253,13 @@ function app_install() {
     [2]) # 1Panel: 现代化、开源的 Linux 服务器运维管理面板
       curl -sSL https://resource.fit2cloud.com/1panel/package/quick_start.sh -o quick_start.sh && sudo bash quick_start.sh
       ;;
+    [3]) # KubeSphere: 在 Kubernetes 之上构建的面向云原生应用的分布式操作系统
+      apt-get -y install socat conntrack ebtables ipset
+      curl -sfL https://get-kk.kubesphere.io | sh -
+      chmod +x kk
+      ./kk create cluster --with-kubernetes v1.24.14 --container-manager containerd --with-kubesphere v3.4.0
+      ;;
+    
     [qQ]) break ;;
     *) echo "错误选项：$REPLY" ;;
     esac
@@ -288,7 +295,7 @@ function app_remove() {
           echo "${app_list_info[$i]} 已安装"
         fi
         ;;
-
+        
       esac
     done
 
