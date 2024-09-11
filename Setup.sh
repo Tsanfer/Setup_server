@@ -334,20 +334,37 @@ function docker_init() {
       docker rm -f "$(docker ps -q)"
     fi
 
+    while true; do
+      read -rp "是否配置国内源安装 docker? [Y/n]" input
+      case $input in
+      [yY])
+        bash <(curl -sSL https://gitee.com/SuperManito/LinuxMirrors/raw/main/DockerInstallation.sh)
+        break
+        ;;
+
+      [nN])
+        curl -fsSL https://get.docker.com | sh
+        break
+        ;;
+
+      *) echo "错误选项：$REPLY" ;;
+      esac
+    done
+
     # sudo apt-get remove docker docker-engine docker.io containerd runc && \
-    sudo apt-get install \
-      ca-certificates \
-      curl \
-      gnupg \
-      lsb-release -y                                                                                                # 预装 Docker 需要的软件
-    sudo mkdir -p /etc/apt/keyrings                                                                                 # 创建公钥文件夹
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg && # 添加 Docker 官方的 GPG 密钥
-      echo \
-        "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-    $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list >/dev/null # 重新建立 apt 仓库
-    sudo apt-get update -y                                                               # 更新 apt 仓库
-    sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y  # 安装 docker 相关软件
-    service docker restart                                                               # 重启 docker 环境
+    # sudo apt-get install \
+    #   ca-certificates \
+    #   curl \
+    #   gnupg \
+    #   lsb-release -y                                                                                                # 预装 Docker 需要的软件
+    # sudo mkdir -p /etc/apt/keyrings                                                                                 # 创建公钥文件夹
+    # curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg && # 添加 Docker 官方的 GPG 密钥
+    #   echo \
+    #     "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+    # $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list >/dev/null # 重新建立 apt 仓库
+    # sudo apt-get update -y                                                               # 更新 apt 仓库
+    # sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y  # 安装 docker 相关软件
+    # service docker restart                                                               # 重启 docker 环境
     echo "安装/更新 docker 环境完成!"
   else
     echo "Ubuntu 版本低于 18.04 无法安装 Docker"
