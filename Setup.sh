@@ -86,9 +86,9 @@ function app_update_init() {
   if ! type btm >/dev/null 2>&1; then
     # 如果没有安装 bottom
     # 从官方仓库下载安装包
-    wget https://$github_repo/ClementTsang/bottom/releases/download/0.9.6/bottom_0.9.6_amd64.deb -P ~ 
+    wget https://$github_repo/ClementTsang/bottom/releases/download/0.10.2/bottom_0.10.2-1_amd64.deb -P ~ 
     # 使用 Debian 软件包管理器，安装 bottom
-    sudo dpkg -i ~/bottom_0.9.6_amd64.deb                                                             
+    sudo dpkg -i ~/bottom_0.10.2-1_amd64.deb
     # 开启 bottom 的 cache_memory 显示
     sed -i "s/^.*enable_cache_memory.*/enable_cache_memory = true/g" ~/.config/bottom/bottom.toml
   else
