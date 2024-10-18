@@ -353,6 +353,7 @@ function docker_init() {
         ;;
 
       [nN])
+        mkdir -p /etc/apt/sources.list.d
         curl -fsSL https://get.docker.com | sh
         break
         ;;
