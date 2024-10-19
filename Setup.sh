@@ -100,7 +100,6 @@ function app_update_init() {
     echo "alias btm='btm --enable_cache_memory'" >> ~/.bashrc
     echo "alias btm='btm --enable_cache_memory'" >> ~/.zshrc
     source ~/.bashrc
-    source ~/.zshrc
     
   else
     echo "已安装 bottom"
