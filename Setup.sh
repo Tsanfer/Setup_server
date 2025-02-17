@@ -90,15 +90,15 @@ function app_update_init() {
     # 使用 Debian 软件包管理器，安装 bottom
     sudo dpkg -i ~/bottom_0.10.2-1_amd64.deb
     # 开启 bottom 的 cache_memory 显示
-    if [ -e ~/.config/bottom/bottom.toml ]; then
-      sed -i "s/^.*enable_cache_memory.*/enable_cache_memory = true/g" ~/.config/bottom/bottom.toml
-    else
-      mkdir -p ~/.config/bottom
-      echo "enable_cache_memory = true" > ~/.config/bottom/bottom.toml
-    fi
+    # if [ -e ~/.config/bottom/bottom.toml ]; then
+    #   sed -i "s/^.*enable_cache_memory.*/enable_cache_memory = true/g" ~/.config/bottom/bottom.toml
+    # else
+    #   mkdir -p ~/.config/bottom
+    #   echo "enable_cache_memory = true" > ~/.config/bottom/bottom.toml
+    # fi
 
-    echo "alias btm='btm --enable_cache_memory'" >> ~/.bashrc
-    echo "alias btm='btm --enable_cache_memory'" >> ~/.zshrc
+    # echo "alias btm='btm --enable_cache_memory'" >> ~/.bashrc
+    # echo "alias btm='btm --enable_cache_memory'" >> ~/.zshrc
     source ~/.bashrc
     
   else
