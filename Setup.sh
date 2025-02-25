@@ -174,11 +174,13 @@ function term_config() {
 
   if [ ! -d ~/.oh-my-zsh ]; then
     echo "oh-my-zsh 未安装"
-    # RUNZSH=no sh -c "$(curl -fsSL https://$github_raw/ohmyzsh/ohmyzsh/master/tools/install.sh)" &&
-    RUNZSH=no sh -c "$(curl -fsSL https://install.ohmyz.sh/)" &&                                               # 使用 oh-my-zsh 官方一键安装脚本（安装完成后，不自动运行）
-      git clone https://$github_repo/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions &&             # 下载 zsh 自动建议插件
-      git clone https://$github_repo/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting && # 下载 zsh 语法高亮插件
-      sed -i 's/^plugins=(/plugins=(\nzsh-autosuggestions\nzsh-syntax-highlighting\n/g' ~/.zshrc                                                 # 加载插件到 zsh 启动配置文件
+    # RUNZSH=no sh -c "$(curl -fsSL https://$github_raw/ohmyzsh/ohmyzsh/master/tools/install.sh)" &&                                             # 使用 oh-my-zsh 官方一键安装脚本（安装完成后，不自动运行）
+    rm -rf ~/.oh-my-zsh ~/.zshrc
+    git clone https://gitee.com/mirrors/oh-my-zsh.git ~/.oh-my-zsh &&
+    cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc &&
+    git clone https://$github_repo/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions &&             # 下载 zsh 自动建议插件
+    git clone https://$github_repo/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting && # 下载 zsh 语法高亮插件
+    sed -i 's/^plugins=(/plugins=(\nzsh-autosuggestions\nzsh-syntax-highlighting\n/g' ~/.zshrc                                                 # 加载插件到 zsh 启动配置文件
 
     # if ! oh-my-posh --version; then
     #   echo "oh-my-posh 未安装"
