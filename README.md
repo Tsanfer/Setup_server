@@ -55,11 +55,11 @@ bash -c "$(wget https://raw.githubusercontent.com/Tsanfer/Setup_server/main/Setu
 ### 国内使用
 
 ```sh
-bash -c "$(curl -fsSL https://gitee.com/tsanfer/Setup_server/raw/main/Setup.sh)"
+bash -c "$(curl -fsSL https://raw.gitmirror.com/Tsanfer/Setup_server/main/Setup.sh)"
 ```
 
 或
 
 ```sh
-bash -c "$(wget https://gitee.com/tsanfer/Setup_server/raw/main/Setup.sh -O -)"
+bash -c "$(wget https://raw.gitmirror.com/Tsanfer/Setup_server/main/Setup.sh -O -)"
 ```
