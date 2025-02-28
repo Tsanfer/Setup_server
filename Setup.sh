@@ -2,6 +2,7 @@
 # 文件位置：$HOME/Setup.sh
 
 github_repo="github.com"               # 默认 github 仓库域名
+github_release="github.com" # 默认 github release 域名
 github_raw="raw.githubusercontent.com" # 默认 github raw 域名
 
 script_list=("app_update_init" "swap_set" "term_config" "app_install" "app_remove" "docker_init" "docker_install" "docker_update" "docker_remove" "apt_clean" "sys_reboot")                                                                           # 脚本列表
@@ -21,6 +22,7 @@ function github_proxy_set() {
       # github_repo="ghproxy.com/https://github.com"
       # github_raw="ghproxy.com/https://raw.githubusercontent.com"
       github_repo="githubfast.com"
+      github_release="get-github.hexj.org/download"
       github_raw="raw.gitmirror.com"
       # github_raw="raw.staticdn.net"
       # wget https://${github_download}/dotnetcore/FastGithub/releases/latest/download/fastgithub_linux-x64.zip -P ~ &&
@@ -35,6 +37,7 @@ function github_proxy_set() {
     [nN]) # 使用原始域名
       # git config --global --remove-section url."https://hub.fastgit.xyz/"
       github_repo="github.com"
+      github_release="github.com" # 默认 github release 域名
       github_raw="raw.githubusercontent.com"
       break
       ;;
@@ -86,7 +89,7 @@ function app_update_init() {
   if ! type btm >/dev/null 2>&1; then
     # 如果没有安装 bottom
     # 从官方仓库下载安装包
-    wget https://$github_repo/ClementTsang/bottom/releases/download/0.10.2/bottom_0.10.2-1_amd64.deb -P ~ 
+    wget https://$github_release/ClementTsang/bottom/releases/download/0.10.2/bottom_0.10.2-1_amd64.deb -P ~ 
     # 使用 Debian 软件包管理器，安装 bottom
     sudo dpkg -i ~/bottom_0.10.2-1_amd64.deb
     # 开启 bottom 的 cache_memory 显示
@@ -196,11 +199,11 @@ function term_config() {
       echo 'export PATH=$PATH:$HOME/.local/bin' >>~/.zshrc
     else
       echo "国内安装方式，安装 oh-my-posh 可能无法成功，尝试安装"
-      sudo wget https://$github_repo/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh && # 下载 oh-my-posh
+      sudo wget https://$github_release/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh && # 下载 oh-my-posh
         sudo chmod +x /usr/local/bin/oh-my-posh
     fi
     mkdir ~/.poshthemes &&
-    wget https://$github_repo/JanDeDobbeleer/oh-my-posh/releases/latest/download/themes.zip -O ~/.poshthemes/themes.zip && # 下载 oh-my-posh 主题文件
+    wget https://$github_release/JanDeDobbeleer/oh-my-posh/releases/latest/download/themes.zip -O ~/.poshthemes/themes.zip && # 下载 oh-my-posh 主题文件
     unzip ~/.poshthemes/themes.zip -d ~/.poshthemes &&
     chmod u+rw ~/.poshthemes/*.omp.* &&
     rm ~/.poshthemes/themes.zip
