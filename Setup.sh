@@ -231,7 +231,8 @@ function term_config() {
         read -rp "已安装 oh-my-posh, 是否卸载? [Y/n] " input
         case $input in
         [yY])
-          rm -rf ~/.oh-my-posh ~/.poshthemes
+          rm -f "$(which oh-my-posh)"
+          rm -rf  ~/.poshthemes
           break
           ;;
   
