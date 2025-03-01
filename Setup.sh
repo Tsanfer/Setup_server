@@ -193,8 +193,8 @@ function term_config() {
 
     if ! oh-my-posh --version; then
       echo "oh-my-posh 未安装"
-      read -rp "是否安装 oh-my-posh? [Y/n] " input
       while true; do
+        read -rp "是否安装 oh-my-posh? [Y/n] " input
         case $input in
         [yY])
           if [ "$github_repo" = "github.com" ]; then
@@ -219,6 +219,23 @@ function term_config() {
           break
           ;;
     
+        *) echo "错误选项：$REPLY" ;;
+        esac
+      done
+    else
+      while true; do
+        read -rp "已安装 oh-my-posh, 是否卸载? [Y/n] " input
+        case $input in
+        [yY])
+          chmod +x ~/.oh-my-zsh/tools/uninstall.sh
+          ~/.oh-my-zsh/tools/uninstall.sh
+          break
+          ;;
+  
+        [nN])
+          break
+          ;;
+  
         *) echo "错误选项：$REPLY" ;;
         esac
       done
