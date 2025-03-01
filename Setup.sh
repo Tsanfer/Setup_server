@@ -191,24 +191,38 @@ function term_config() {
     git clone https://$github_repo/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting && # 下载 zsh 语法高亮插件
     sed -i 's/^plugins=(/plugins=(\nzsh-autosuggestions\nzsh-syntax-highlighting\n/g' ~/.zshrc                                                 # 加载插件到 zsh 启动配置文件
 
-    # if ! oh-my-posh --version; then
-    #   echo "oh-my-posh 未安装"
-    if [ "$github_repo" = "github.com" ]; then
-      mkdir ~/.local
-      curl -s https://ohmyposh.dev/install.sh | bash -s
-      echo 'export PATH=$PATH:$HOME/.local/bin' >>~/.zshrc
-    else
-      echo "国内安装方式，安装 oh-my-posh 可能无法成功，尝试安装"
-      sudo wget https://$github_release/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh && # 下载 oh-my-posh
-        sudo chmod +x /usr/local/bin/oh-my-posh
+    if ! oh-my-posh --version; then
+      echo "oh-my-posh 未安装"
+      read -rp "是否安装 oh-my-posh? [Y/n] " input
+      while true; do
+        case $input in
+        [yY])
+          if [ "$github_repo" = "github.com" ]; then
+            mkdir ~/.local
+            curl -s https://ohmyposh.dev/install.sh | bash -s
+            echo 'export PATH=$PATH:$HOME/.local/bin' >>~/.zshrc
+          else
+            echo "国内安装方式，安装 oh-my-posh 可能无法成功，尝试安装"
+            sudo wget https://$github_release/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh && # 下载 oh-my-posh
+              sudo chmod +x /usr/local/bin/oh-my-posh
+          fi
+          mkdir ~/.poshthemes &&
+          wget https://$github_release/JanDeDobbeleer/oh-my-posh/releases/latest/download/themes.zip -O ~/.poshthemes/themes.zip && # 下载 oh-my-posh 主题文件
+          unzip ~/.poshthemes/themes.zip -d ~/.poshthemes &&
+          chmod u+rw ~/.poshthemes/*.omp.* &&
+          rm ~/.poshthemes/themes.zip
+          sed -i '$a\eval "$(oh-my-posh init zsh --config ~/.poshthemes/craver.omp.json)"' ~/.zshrc # 每次进入 zsh 时，自动打开 oh-my-posh 主题
+          break
+          ;;
+    
+        [nN])
+          break
+          ;;
+    
+        *) echo "错误选项：$REPLY" ;;
+        esac
+      done
     fi
-    mkdir ~/.poshthemes &&
-    wget https://$github_release/JanDeDobbeleer/oh-my-posh/releases/latest/download/themes.zip -O ~/.poshthemes/themes.zip && # 下载 oh-my-posh 主题文件
-    unzip ~/.poshthemes/themes.zip -d ~/.poshthemes &&
-    chmod u+rw ~/.poshthemes/*.omp.* &&
-    rm ~/.poshthemes/themes.zip
-    sed -i '$a\eval "$(oh-my-posh init zsh --config ~/.poshthemes/craver.omp.json)"' ~/.zshrc # 每次进入 zsh 时，自动打开 oh-my-posh 主题
-  
   else
     while true; do
       read -rp "已安装 oh-my-zsh, 是否卸载? [Y/n] " input
