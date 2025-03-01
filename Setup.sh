@@ -227,8 +227,7 @@ function term_config() {
         read -rp "已安装 oh-my-posh, 是否卸载? [Y/n] " input
         case $input in
         [yY])
-          chmod +x ~/.oh-my-zsh/tools/uninstall.sh
-          ~/.oh-my-zsh/tools/uninstall.sh
+          rm -rf ~/.oh-my-posh ~/.poshthemes
           break
           ;;
   
@@ -245,7 +244,9 @@ function term_config() {
       read -rp "已安装 oh-my-zsh, 是否卸载? [Y/n] " input
       case $input in
       [yY])
-        rm -rf ~/.oh-my-zsh ~/.oh-my-posh ~/.poshthemes
+        chmod +x ~/.oh-my-zsh/tools/uninstall.sh
+        ~/.oh-my-zsh/tools/uninstall.sh
+        # rm -rf ~/.oh-my-zsh
         break
         ;;
 
