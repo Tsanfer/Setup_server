@@ -181,6 +181,7 @@ function term_config() {
 
   if [ ! -d ~/.oh-my-zsh ]; then
     echo "oh-my-zsh 未安装"
+    rm -rf ~/.oh-my-zsh ~/.zshrc
     # RUNZSH=no sh -c "$(curl -fsSL https://$github_raw/ohmyzsh/ohmyzsh/master/tools/install.sh)" &&                                             # 使用 oh-my-zsh 官方一键安装脚本（安装完成后，不自动运行）
     RUNZSH=no sh -c "$(curl -fsSL https://install.ohmyz.sh/)"
     # # 安装 zsh 和设置 zsh 为默认shell
@@ -188,7 +189,6 @@ function term_config() {
     # sudo apt-get install -y zsh
     # chsh -s $(which zsh)
     
-    rm -rf ~/.oh-my-zsh ~/.zshrc
 
     # git clone https://gitee.com/mirrors/oh-my-zsh.git ~/.oh-my-zsh &&
     # cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc &&
