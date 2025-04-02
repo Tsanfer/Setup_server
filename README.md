@@ -61,5 +61,5 @@ bash -c "$(curl -fsSL https://ghfast.top/https://raw.githubusercontent.com/Tsanf
 或
 
 ```sh
-bash -c "$(wget https://ghfast.top/https://raw.githubusercontent.com/Tsanfer/Setup_server/main/Setup.sh -O -)"
+bash -c "$(wget https://gh-proxy.com/raw.githubusercontent.com/Tsanfer/Setup_server/refs/heads/main/README.md -O -)"
 ```
