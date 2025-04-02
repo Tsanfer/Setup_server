@@ -181,7 +181,7 @@ function term_config() {
 
   if [ ! -d ~/.oh-my-zsh ]; then
     echo "oh-my-zsh 未安装"
-    # RUNZSH=no sh -c "$(curl -fsSL https://$github_raw/ohmyzsh/ohmyzsh/master/tools/install.sh)" &&                                             # 使用 oh-my-zsh 官方一键安装脚本（安装完成后，不自动运行）
+    RUNZSH=no sh -c "$(curl -fsSL https://$github_raw/ohmyzsh/ohmyzsh/master/tools/install.sh)" &&                                             # 使用 oh-my-zsh 官方一键安装脚本（安装完成后，不自动运行）
     
     # # 安装 zsh 和设置 zsh 为默认shell
     # sudo apt-get update -y
@@ -193,7 +193,7 @@ function term_config() {
     # git clone https://gitee.com/mirrors/oh-my-zsh.git ~/.oh-my-zsh &&
     # cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc &&
 
-    RUNZSH=no sh -c "$(wget -O- https://gitee.com/mirrors/oh-my-zsh/raw/master/tools/install.sh)"
+    # RUNZSH=no sh -c "$(wget -O- https://gitee.com/mirrors/oh-my-zsh/raw/master/tools/install.sh)"
     
     git clone https://$github_repo/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions &&             # 下载 zsh 自动建议插件
     git clone https://$github_repo/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting && # 下载 zsh 语法高亮插件
