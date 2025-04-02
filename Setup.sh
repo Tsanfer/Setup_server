@@ -21,7 +21,8 @@ function github_proxy_set() {
       # git config --global url."https://hub.fastgit.xyz/".insteadOf https://github.com/
       # github_repo="ghproxy.com/https://github.com"
       # github_raw="ghproxy.com/https://raw.githubusercontent.com"
-      github_repo="githubfast.com"
+      # github_repo="githubfast.com"
+      github_repo="gh-proxy.com/github.com"
       github_release="gh-proxy.com/github.com"
       #github_release="get-github.hexj.org/download"
       github_raw="gh-proxy.com/raw.githubusercontent.com"
