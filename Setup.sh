@@ -188,6 +188,7 @@ function term_config() {
     git clone https://mirrors.tuna.tsinghua.edu.cn/git/ohmyzsh.git
     cd ohmyzsh/tools
     RUNZSH=no REMOTE=https://mirrors.tuna.tsinghua.edu.cn/git/ohmyzsh.git sh install.sh
+    cd
     # # 安装 zsh 和设置 zsh 为默认shell
     # sudo apt-get update -y
     # sudo apt-get install -y zsh
