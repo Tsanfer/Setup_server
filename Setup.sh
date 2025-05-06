@@ -240,6 +240,7 @@ function term_config() {
         case $input in
         [yY])
           rm -f "$(which oh-my-posh)"
+          rm -f ~/.oh-my-zsh
           rm -rf  ~/.poshthemes
           break
           ;;
