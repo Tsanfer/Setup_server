@@ -184,9 +184,8 @@ function vps_reviews() {
   # 判断 goecs 命令是否存在
   if command -v goecs &> /dev/null; then
       echo "goecs 命令已安装，路径为：$(command -v goecs)"
-      goecs
   else
-      echo "goecs 命令未安装"
+      echo "goecs 命令未安装，安装 goecs"
       # 下载脚本
       curl -L https://cnb.cool/oneclickvirt/ecs/-/git/raw/main/goecs.sh -o goecs.sh && chmod +x goecs.sh
       # 更新包管理器（可选择）并安装环境
@@ -197,8 +196,8 @@ function vps_reviews() {
       ./goecs.sh upgrade
       # 卸载 goecs
       # ./goecs.sh uninstall
-      goecs
   fi
+  goecs -diskmc=true
 }
 
 # 配置终端
@@ -797,6 +796,7 @@ if grep "Ubuntu" /etc/issue; then # 判断系统发行版是否为 Ubuntu
     echo "选择要运行的脚本: "
     for i in "${!script_list[@]}"; do
       printf "%2s. %-20s%-s\n" "$i" "${script_list[$i]}" "${script_list_info[$i]}" # 显示脚本列表
+      printf "------------------------------\n"
     done
     echo "i. 初始化配置脚本"
     read -r -p "选择要进行的操作 (q:退出): " input
