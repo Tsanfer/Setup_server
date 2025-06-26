@@ -12,17 +12,25 @@
   |[rsync](https://github.com/WayneD/rsync)|文件同步|`rsync`|
   |[bottom](https://github.com/ClementTsang/bottom)|图形化系统监控|`btm`|
   |[neofetch](https://github.com/dylanaraps/neofetch)|系统信息工具|`neofetch`|
+  
 - 配置 swap 内存
+
+- 服务器测试
+  - [VPS融合怪服务器测试脚本](https://github.com/oneclickvirt/ecs)
+  
 - 配置终端
   - [Oh-my-zsh](https://github.com/ohmyzsh/ohmyzsh) 及插件安装（加强 zsh 的功能）
   - [Oh-my-posh](https://github.com/JanDeDobbeleer/oh-my-posh) 安装（终端提示符美化）
+  
 - 自选软件安装/卸载
   |自选软件|功能|命令|
   |--|--|--|
   |[mdserver-web](https://github.com/midoks/mdserver-web)|一款简单Linux面板服务（宝塔翻版）|`mw`|
   |[aaPanel](https://www.aapanel.com/new/index.html)|宝塔国外版|`bt`|
   |[1Panel](https://github.com/1Panel-dev/1Panel)|现代化、开源的 Linux 服务器运维管理面板|`1pctl`|
+  
 - 安装和更新 Docker
+
 - 安装/删除 docker 容器
   |Docker 容器|功能|端口|
   |--|--|--|
@@ -38,6 +46,7 @@
   |[webdav-client](https://github.com/efrecon/docker-webdav-client)|Webdav 客户端，同步映射到宿主文件系统||
   |[watchtower](https://github.com/containrrr/watchtower)|自动化更新 Docker 镜像和容器||
   |[jsxm](https://github.com/a1k0n/jsxm)|Web 在线 xm 音乐播放器|`8081`|
+  
 - 清理 APT 空间
 
 ## 一键脚本
