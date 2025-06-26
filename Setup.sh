@@ -26,7 +26,7 @@ function github_proxy_set() {
       github_release="gh-proxy.com/github.com"
       #github_release="get-github.hexj.org/download"
       github_raw="gh-proxy.com/raw.githubusercontent.com"
-      
+
       # github_raw="ghfast.top/https://raw.githubusercontent.com"
       # github_raw="raw.gitmirror.com"
       # github_raw="raw.staticdn.net"
@@ -95,7 +95,7 @@ function app_update_init() {
   if ! type btm >/dev/null 2>&1; then
     # 如果没有安装 bottom
     # 从官方仓库下载安装包
-    wget https://$github_release/ClementTsang/bottom/releases/download/0.10.2/bottom_0.10.2-1_amd64.deb -P ~ 
+    wget https://$github_release/ClementTsang/bottom/releases/download/0.10.2/bottom_0.10.2-1_amd64.deb -P ~
     # 使用 Debian 软件包管理器，安装 bottom
     sudo dpkg -i ~/bottom_0.10.2-1_amd64.deb
     # 开启 bottom 的 cache_memory 显示
@@ -109,7 +109,7 @@ function app_update_init() {
     # echo "alias btm='btm --enable_cache_memory'" >> ~/.bashrc
     # echo "alias btm='btm --enable_cache_memory'" >> ~/.zshrc
     source ~/.bashrc
-    
+
   else
     echo "已安装 bottom"
   fi
@@ -219,13 +219,13 @@ function term_config() {
     sudo apt-get update -y
     sudo apt-get install -y zsh
     chsh -s $(which zsh)
-    
+
 
     # git clone https://gitee.com/mirrors/oh-my-zsh.git ~/.oh-my-zsh &&
     # cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc &&
 
     # RUNZSH=no sh -c "$(wget -O- https://gitee.com/mirrors/oh-my-zsh/raw/master/tools/install.sh)"
-    
+
     git clone https://$github_repo/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions &&             # 下载 zsh 自动建议插件
     git clone https://$github_repo/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting && # 下载 zsh 语法高亮插件
     sed -i 's/^plugins=(/plugins=(\nzsh-autosuggestions\nzsh-syntax-highlighting\n/g' ~/.zshrc                                                 # 加载插件到 zsh 启动配置文件
@@ -253,11 +253,11 @@ function term_config() {
           sed -i '$a\eval "$(oh-my-posh init zsh --config ~/.poshthemes/craver.omp.json)"' ~/.zshrc # 每次进入 zsh 时，自动打开 oh-my-posh 主题
           break
           ;;
-    
+
         [nN])
           break
           ;;
-    
+
         *) echo "错误选项：$REPLY" ;;
         esac
       done
@@ -271,11 +271,11 @@ function term_config() {
           rm -rf  ~/.poshthemes
           break
           ;;
-  
+
         [nN])
           break
           ;;
-  
+
         *) echo "错误选项：$REPLY" ;;
         esac
       done
@@ -360,7 +360,7 @@ function app_install() {
       chmod +x kk
       ./kk create cluster --with-kubernetes v1.24.14 --container-manager containerd --with-kubesphere v3.4.0
       ;;
-    
+
     [qQ]) break ;;
     *) echo "错误选项：$REPLY" ;;
     esac
@@ -396,7 +396,7 @@ function app_remove() {
           echo "${app_list_info[$i]} 已安装"
         fi
         ;;
-        
+
       esac
     done
 
@@ -627,7 +627,7 @@ function docker_install() {
         if [ -z "$webdav_local_path" ]; then
           webdav_local_path="/mnt/webdav"
         fi
-        
+
         echo "WEBDRIVE_URL=$webdav_url" >~/"${docker_list[$input]}".env
         echo "WEBDRIVE_USERNAME=$webdav_user" >>~/"${docker_list[$input]}".env
         echo "WEBDRIVE_PASSWORD=$webdav_pass" >>~/"${docker_list[$input]}".env
@@ -794,11 +794,13 @@ if grep "Ubuntu" /etc/issue; then # 判断系统发行版是否为 Ubuntu
   while true; do
     echo
     echo "选择要运行的脚本: "
+    echo "----------------------------------------------------------------------"
     for i in "${!script_list[@]}"; do
-      printf "%2s. %-20s%-s\n" "$i" "${script_list[$i]}" "${script_list_info[$i]}" # 显示脚本列表
-      printf "------------------------------\n"
+      printf "|%2s.|%-20s|%-s|\n" "$i" "${script_list[$i]}" "${script_list_info[$i]}" # 显示脚本列表
+      echo "----------------------------------------------------------------------"
     done
     echo "i. 初始化配置脚本"
+    echo "----------------------------------------------------------------------"
     read -r -p "选择要进行的操作 (q:退出): " input
     case $input in
     [iI])
