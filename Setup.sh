@@ -65,7 +65,8 @@ function app_update_init() {
       # 使用脚本 LinuxMirrors 官方地址：https://gitee.com/SuperManito/LinuxMirrors
       # read -rsp "输入 root 密码: " sudo_password
       # echo $sudo_password | sudo bash -c "$(curl -fsSL https://gitee.com/SuperManito/LinuxMirrors/raw/main/ChangeMirrors.sh)"
-      sudo bash -c "$(curl -fsSL https://gitee.com/SuperManito/LinuxMirrors/raw/main/ChangeMirrors.sh)"
+      # sudo bash -c "$(curl -fsSL https://gitee.com/SuperManito/LinuxMirrors/raw/main/ChangeMirrors.sh)"
+      bash <(curl -sSL https://linuxmirrors.cn/main.sh)
       break
       ;;
 
@@ -412,7 +413,8 @@ function docker_init() {
       read -rp "是否配置国内源安装 docker? [Y/n]" input
       case $input in
       [yY])
-        bash <(curl -sSL https://gitee.com/SuperManito/LinuxMirrors/raw/main/DockerInstallation.sh)
+        # bash <(curl -sSL https://gitee.com/SuperManito/LinuxMirrors/raw/main/DockerInstallation.sh)
+        bash <(curl -sSL https://linuxmirrors.cn/docker.sh)
         break
         ;;
 
