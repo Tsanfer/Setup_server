@@ -5,8 +5,8 @@ github_repo="github.com"               # 默认 github 仓库域名
 github_release="github.com" # 默认 github release 域名
 github_raw="raw.githubusercontent.com" # 默认 github raw 域名
 
-script_list=("app_update_init" "swap_set" "term_config" "app_install" "app_remove" "docker_init" "docker_install" "docker_update" "docker_remove" "apt_clean" "sys_reboot")                                                                           # 脚本列表
-script_list_info=("APT 软件更新、默认软件安装" "设置 swap 内存" "配置终端" "自选软件安装" "自选软件卸载" "安装，更新 Docker" "从 Docker compose 部署 docker 容器" "更新 docker 镜像和容器" "删除 docker 镜像和容器" "清理 APT 空间" "重启系统")                  # 脚本列表说明
+script_list=("app_update_init" "swap_set" "vps_reviews" "term_config"  "app_install" "app_remove" "docker_init" "docker_install" "docker_update" "docker_remove" "apt_clean" "sys_reboot")                                                                           # 脚本列表
+script_list_info=("APT 软件更新、默认软件安装" "设置 swap 内存" "服务器测试" "配置终端" "自选软件安装" "自选软件卸载" "安装，更新 Docker" "从 Docker compose 部署 docker 容器" "更新 docker 镜像和容器" "删除 docker 镜像和容器" "清理 APT 空间" "重启系统")                  # 脚本列表说明
 docker_list=("code-server" "nginx" "pure-ftpd" "web_object_detection" "zfile" "subconverter" "sub-web" "mdserver-web" "qinglong" "webdav-client" "watchtower" "jsxm")                                                                                 # 可安装容器列表
 docker_list_info=("在线 Web IDE" "Web 服务器" "FTP 服务器" "在线 web 目标识别" "在线云盘" "订阅转换后端" "订阅转换前端" "一款简单Linux面板服务" "定时任务管理面板" "Webdav 客户端，同步映射到宿主文件系统" "自动化更新 Docker 镜像和容器" "Web 在线 xm 音乐播放器") # 可安装容器列表说明
 app_list=("mw" "bt" "1pctl" "kubesphere")                                                                                                                                                                                                             # 自选软件列表
@@ -173,6 +173,31 @@ function swap_set() {
     *) echo "错误选项：$REPLY" ;;
     esac
   done
+}
+
+# 服务器测试
+function vps_reviews() {
+  echo
+  echo "---------- VPS 融合怪脚本服务器测试 ----------"
+  echo
+
+  # 判断 goecs 命令是否存在
+  if command -v goecs &> /dev/null; then
+      echo "goecs 命令已安装，路径为：$(command -v goecs)"
+      goecs
+  else
+      echo "goecs 命令未安装"
+      # 下载脚本
+      curl -L https://cdn.spiritlhl.net/https://raw.githubusercontent.com/oneclickvirt/ecs/master/goecs.sh -o goecs.sh && chmod +x goecs.sh
+      # 更新包管理器（可选择）并安装环境
+      export noninteractive=true && ./goecs.sh env
+      # 安装 goecs
+      ./goecs.sh install
+      # 升级 goecs
+      ./goecs.sh upgrade
+      # 卸载 goecs
+      # ./goecs.sh uninstall
+  fi
 }
 
 # 配置终端
@@ -778,6 +803,7 @@ if grep "Ubuntu" /etc/issue; then # 判断系统发行版是否为 Ubuntu
     [iI])
       app_update_init &&
         swap_set &&
+        vps_reviews &&
         term_config &&
         docker_init &&
         app_install &&
