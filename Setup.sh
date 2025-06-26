@@ -188,7 +188,7 @@ function vps_reviews() {
   else
       echo "goecs 命令未安装"
       # 下载脚本
-      curl -L https://cdn.spiritlhl.net/https://raw.githubusercontent.com/oneclickvirt/ecs/master/goecs.sh -o goecs.sh && chmod +x goecs.sh
+      curl -L https://cnb.cool/oneclickvirt/ecs/-/git/raw/main/goecs.sh -o goecs.sh && chmod +x goecs.sh
       # 更新包管理器（可选择）并安装环境
       export noninteractive=true && ./goecs.sh env
       # 安装 goecs
