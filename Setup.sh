@@ -326,7 +326,8 @@ function app_install() {
       wget -O install.sh http://www.aapanel.com/script/install-ubuntu_6.0_en.sh && sudo bash install.sh aapanel
       ;;
     [2]) # 1Panel: 现代化、开源的 Linux 服务器运维管理面板
-      curl -sSL https://resource.fit2cloud.com/1panel/package/quick_start.sh -o quick_start.sh && sudo bash quick_start.sh
+      # curl -sSL https://resource.fit2cloud.com/1panel/package/quick_start.sh -o quick_start.sh && sudo bash quick_start.sh
+      bash -c "$(curl -sSL https://resource.fit2cloud.com/1panel/package/v2/quick_start.sh)"
       ;;
     [3]) # KubeSphere: 在 Kubernetes 之上构建的面向云原生应用的分布式操作系统
       apt-get -y install socat conntrack ebtables ipset
