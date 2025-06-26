@@ -197,6 +197,7 @@ function vps_reviews() {
       ./goecs.sh upgrade
       # 卸载 goecs
       # ./goecs.sh uninstall
+      goecs
   fi
 }
 
