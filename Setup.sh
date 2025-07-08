@@ -790,37 +790,45 @@ function sys_reboot() {
 # ----- 程序开始位置 -----
 github_proxy_set
 
-if grep "Ubuntu" /etc/issue; then # 判断系统发行版是否为 Ubuntu
-  while true; do
-    echo
-    echo "选择要运行的脚本: "
-    echo "----------------------------------------------------------------------"
-    for i in "${!script_list[@]}"; do
-      printf "|%2s.|%-20s|%-s|\n" "$i" "${script_list[$i]}" "${script_list_info[$i]}" # 显示脚本列表
-      echo "----------------------------------------------------------------------"
-    done
-    echo "i. 初始化配置脚本"
-    echo "----------------------------------------------------------------------"
-    read -r -p "选择要进行的操作 (q:退出): " input
-    case $input in
-    [iI])
-      app_update_init &&
-        swap_set &&
-        vps_reviews &&
-        term_config &&
-        docker_init &&
-        app_install &&
-        docker_install &&
-        apt_clean &&
-        sys_reboot
-      ;;
-    [qQ]) break ;;
-    *) ${script_list[$input]} ;;
-      # *) echo "错误选项：$REPLY" ;;
-    esac
-  done
-  echo "Done!!!"
-  zsh # 进入新终端
+if [ -f /etc/os-release ]; then
+    . /etc/os-release
+    if [ "$ID" = "debian" ] || [[ "$ID_LIKE" =~ "debian" ]]; then
+        echo "操作系统基于 Debian"
+
+        while true; do
+        echo
+        echo "选择要运行的脚本: "
+        echo "----------------------------------------------------------------------"
+        for i in "${!script_list[@]}"; do
+          printf "|%2s.|%-20s|%-s|\n" "$i" "${script_list[$i]}" "${script_list_info[$i]}" # 显示脚本列表
+          echo "----------------------------------------------------------------------"
+        done
+        echo "i. 初始化配置脚本"
+        echo "----------------------------------------------------------------------"
+        read -r -p "选择要进行的操作 (q:退出): " input
+        case $input in
+        [iI])
+          app_update_init &&
+            swap_set &&
+            vps_reviews &&
+            term_config &&
+            docker_init &&
+            app_install &&
+            docker_install &&
+            apt_clean &&
+            sys_reboot
+          ;;
+        [qQ]) break ;;
+        *) ${script_list[$input]} ;;
+          # *) echo "错误选项：$REPLY" ;;
+        esac
+      done
+      echo "Done!!!"
+      zsh # 进入新终端
+
+    else
+        echo "操作系统不是基于 Debian"
+    fi
 else
-  echo "linux 系统不是 Ubuntu"
+    echo "无法识别操作系统 /etc/os-release 文件未找到"
 fi
