@@ -197,7 +197,7 @@ function vps_reviews() {
       # 卸载 goecs
       # ./goecs.sh uninstall
   fi
-  goecs -diskmc=true
+  goecs
 }
 
 # 配置终端
