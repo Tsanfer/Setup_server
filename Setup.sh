@@ -796,19 +796,19 @@ if [ -f /etc/os-release ]; then
         echo "操作系统基于 Debian"
 
         while true; do
-        echo
-        echo "选择要运行的脚本: "
-        echo "----------------------------------------------------------------------"
-        for i in "${!script_list[@]}"; do
-          printf "|%2s.|%-20s|%-s|\n" "$i" "${script_list[$i]}" "${script_list_info[$i]}" # 显示脚本列表
+          echo
+          echo "选择要运行的脚本: "
           echo "----------------------------------------------------------------------"
-        done
-        echo "i. 初始化配置脚本"
-        echo "----------------------------------------------------------------------"
-        read -r -p "选择要进行的操作 (q:退出): " input
-        case $input in
-        [iI])
-          app_update_init &&
+          for i in "${!script_list[@]}"; do
+            printf "|%2s.|%-20s|%-s|\n" "$((i + 1))" "${script_list[$i]}" "${script_list_info[$i]}" # 显示脚本列表
+            echo "----------------------------------------------------------------------"
+          done
+          echo "i. 初始化配置脚本"
+          echo "----------------------------------------------------------------------"
+          read -r -p "选择要进行的操作 (q:退出): " input
+          case $input in
+          [iI])
+            app_update_init &&
             swap_set &&
             vps_reviews &&
             term_config &&
@@ -817,14 +817,24 @@ if [ -f /etc/os-release ]; then
             docker_install &&
             apt_clean &&
             sys_reboot
-          ;;
-        [qQ]) break ;;
-        *) ${script_list[$input]} ;;
-          # *) echo "错误选项：$REPLY" ;;
-        esac
-      done
-      echo "Done!!!"
-      zsh # 进入新终端
+            ;;
+          [qQ]) break ;;
+          *)
+            if [[ "$input" =~ ^[0-9]+$ ]]; then
+              input=$((input - 1)) # 将用户输入的序号减1，以匹配数组索引
+              if ((input >= 0 && input < ${#script_list[@]})); then
+                ${script_list[$input]}
+              else
+                echo "错误选项：$((input + 1))"
+              fi
+            else
+              echo "错误选项：$input"
+            fi
+            ;;
+          esac
+        done
+        echo "Done!!!"
+        zsh # 进入新终端
 
     else
         echo "操作系统不是基于 Debian"
