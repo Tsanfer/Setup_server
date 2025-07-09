@@ -8,6 +8,7 @@
 
 - APT 软件更新、默认软件安装（可选择是否更换系统软件源）
   > 调用 LinuxMirrors 脚本完成换源
+  
   |部分默认软件|功能|命令|
   |--|--|--|
   |[rsync](https://github.com/WayneD/rsync)|文件同步|`rsync`|
