@@ -6,7 +6,7 @@
 
 > 正在计划使用 Kubernetes 来平替此脚本中的 Docker 相关部署
 
-- APT 软件更新、默认软件安装
+- APT 软件更新、默认软件安装（可选择是否更换系统软件源）
   |部分默认软件|功能|命令|
   |--|--|--|
   |[rsync](https://github.com/WayneD/rsync)|文件同步|`rsync`|
