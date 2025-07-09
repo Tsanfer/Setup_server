@@ -7,6 +7,7 @@
 > 正在计划使用 Kubernetes 来平替此脚本中的 Docker 相关部署
 
 - APT 软件更新、默认软件安装（可选择是否更换系统软件源）
+  > 调用 LinuxMirrors 脚本完成换源
   |部分默认软件|功能|命令|
   |--|--|--|
   |[rsync](https://github.com/WayneD/rsync)|文件同步|`rsync`|
@@ -30,6 +31,7 @@
   |[1Panel](https://github.com/1Panel-dev/1Panel)|现代化、开源的 Linux 服务器运维管理面板|`1pctl`|
   
 - 安装和更新 Docker
+  > 调用 LinuxMirrors 脚本完成操作
 
 - 安装/删除 docker 容器
   |Docker 容器|功能|端口|
