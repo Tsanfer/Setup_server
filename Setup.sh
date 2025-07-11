@@ -76,8 +76,8 @@ function app_update_init() {
     *) echo "错误选项：$REPLY" ;;
     esac
   done
-  sudo apt update -y  # 更新软件列表
-  sudo apt upgrade -y # 更新所有软件
+  sudo apt -y update || apt -y update   # 更新软件列表
+  sudo apt -y upgrade || apt -y upgrade # 更新所有软件
   # 默认安装：
   #   zsh - 命令行界面
   #   git - 版本控制工具
