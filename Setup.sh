@@ -57,7 +57,6 @@ function app_update_init() {
   echo
   echo "---------- APT 软件更新、默认软件安装 ----------"
   echo
-  sudo apt install curl wget lsb-release -y
   read -rp "是否使用 LinuxMirrors 脚本，更换国内软件源? [Y/n] " input
   while true; do
     case $input in
@@ -460,8 +459,7 @@ function docker_init() {
     # sudo apt-get install \
     #   ca-certificates \
     #   curl \
-    #   gnupg \
-    #   lsb-release -y                                                                                                # 预装 Docker 需要的软件
+    #   gnupg                                                                                                # 预装 Docker 需要的软件
     # sudo mkdir -p /etc/apt/keyrings                                                                                 # 创建公钥文件夹
     # curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg && # 添加 Docker 官方的 GPG 密钥
     #   echo \
