@@ -79,6 +79,7 @@ function app_update_init() {
   sudo apt -y update || apt -y update   # 更新软件列表
   sudo apt -y upgrade || apt -y upgrade # 更新所有软件
   # 默认安装：
+  #   sudo - 系统管理指令
   #   zsh - 命令行界面
   #   git - 版本控制工具
   #   vim - 文本编辑器
@@ -89,7 +90,8 @@ function app_update_init() {
   #   rsync - 文件同步
   #   bottom - 图形化系统监控
   #   neofetch - 系统信息工具
-  sudo apt install zsh git vim unzip bc rsync jq -y
+  apt -y install sudo
+  sudo apt -y install curl wget zsh git vim unzip bc rsync jq
 
   if ! type btm >/dev/null 2>&1; then
     # 如果没有安装 bottom
@@ -197,6 +199,7 @@ function vps_reviews() {
       # ./goecs.sh uninstall
   fi
   goecs -diskmc=true
+  read -rp "按回车键继续"
 }
 
 # 配置终端
@@ -283,12 +286,15 @@ function term_config() {
     fi
   else
     while true; do
-      read -rp "已安装 oh-my-zsh, 是否卸载? [Y/n] " input
+      read -rp "已安装 oh-my-zsh, 是否卸载 oh-my-zsh 和 oh-my-posh ? [Y/n] " input
       case $input in
       [yY])
         chmod +x ~/.oh-my-zsh/tools/uninstall.sh
         ~/.oh-my-zsh/tools/uninstall.sh
         # rm -rf ~/.oh-my-zsh
+        rm -rf "$(which oh-my-posh)"
+        rm -rf ~/.oh-my-zsh
+        rm -rf  ~/.poshthemes
         break
         ;;
 
