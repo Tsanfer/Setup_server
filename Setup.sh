@@ -66,7 +66,7 @@ function app_update_init() {
       # read -rsp "输入 root 密码: " sudo_password
       # echo $sudo_password | sudo bash -c "$(curl -fsSL https://gitee.com/SuperManito/LinuxMirrors/raw/main/ChangeMirrors.sh)"
       # sudo bash -c "$(curl -fsSL https://gitee.com/SuperManito/LinuxMirrors/raw/main/ChangeMirrors.sh)"
-      bash <(curl -sSL https://linuxmirrors.cn/main.sh)
+      bash <(curl -sSL https://linuxmirrors.cn/main.sh) || wget -qO - https://linuxmirrors.cn/main.sh | bash 
       break
       ;;
 
