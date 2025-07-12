@@ -65,7 +65,14 @@ function app_update_init() {
       # read -rsp "输入 root 密码: " sudo_password
       # echo $sudo_password | sudo bash -c "$(curl -fsSL https://gitee.com/SuperManito/LinuxMirrors/raw/main/ChangeMirrors.sh)"
       # sudo bash -c "$(curl -fsSL https://gitee.com/SuperManito/LinuxMirrors/raw/main/ChangeMirrors.sh)"
-      bash <(curl -sSL https://linuxmirrors.cn/main.sh) || wget -qO - https://linuxmirrors.cn/main.sh | bash 
+      if command -v curl >/dev/null 2>&1; then
+          bash <(curl -sSL https://linuxmirrors.cn/main.sh)
+      elif command -v wget >/dev/null 2>&1; then
+          wget -qO- https://linuxmirrors.cn/main.sh | bash
+      else
+          echo "请先安装 curl 或 wget" >&2
+          exit 1
+      fi
       break
       ;;
 
@@ -194,7 +201,7 @@ function vps_reviews() {
       # 安装 goecs
       ./goecs.sh install
       # 升级 goecs
-      ./goecs.sh upgrade
+      # ./goecs.sh upgrade
       # 卸载 goecs
       # ./goecs.sh uninstall
   fi
