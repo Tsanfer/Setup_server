@@ -362,7 +362,7 @@ function app_install() {
       curl -fsSL https://$github_raw/midoks/mdserver-web/master/scripts/install.sh | bash
       ;;
     [1]) # aaPanel: 宝塔面板国外版
-      wget -O install.sh http://www.aapanel.com/script/install-ubuntu_6.0_en.sh && sudo bash install.sh aapanel
+      if [ -f /usr/bin/curl ];then curl -sSO https://download.bt.cn/install/install_panel.sh;else wget -O install_panel.sh https://download.bt.cn/install/install_panel.sh;fi;bash install_panel.sh ed8484bec
       ;;
     [2]) # 1Panel: 现代化、开源的 Linux 服务器运维管理面板
       # curl -sSL https://resource.fit2cloud.com/1panel/package/quick_start.sh -o quick_start.sh && sudo bash quick_start.sh
@@ -440,51 +440,41 @@ function docker_init() {
   echo
   echo "---------- 安装/更新 Docker ----------"
   echo
-  release_ver=$(awk '/Ubuntu/ {print $2}' /etc/issue | awk -F. '{printf "%2s.%s\n",$1,$2}') # 获得 Ubuntu 版本号（如：20.04）
-  if echo "$(echo "$release_ver" | bc) >= 18.04" | bc; then                                 # 如果版本符合要求
-    echo "安装/更新 Docker 环境..."
 
-    if docker -v; then # 如果 docker 已安装
-      echo "删除现有容器"
-      docker rm -f "$(docker ps -q)"
-    fi
+  while true; do
+    read -rp "是否配置国内源安装 docker? [Y/n]" input
+    case $input in
+    [yY])
+      # bash <(curl -sSL https://gitee.com/SuperManito/LinuxMirrors/raw/main/DockerInstallation.sh)
+      bash <(curl -sSL https://linuxmirrors.cn/docker.sh)
+      break
+      ;;
 
-    while true; do
-      read -rp "是否配置国内源安装 docker? [Y/n]" input
-      case $input in
-      [yY])
-        # bash <(curl -sSL https://gitee.com/SuperManito/LinuxMirrors/raw/main/DockerInstallation.sh)
-        bash <(curl -sSL https://linuxmirrors.cn/docker.sh)
-        break
-        ;;
+    [nN])
+      mkdir -p /etc/apt/sources.list.d
+      curl -fsSL https://get.docker.com | sh
+      break
+      ;;
 
-      [nN])
-        mkdir -p /etc/apt/sources.list.d
-        curl -fsSL https://get.docker.com | sh
-        break
-        ;;
+    *) echo "错误选项：$REPLY" ;;
+    esac
+  done
 
-      *) echo "错误选项：$REPLY" ;;
-      esac
-    done
-
-    # sudo apt-get remove docker docker-engine docker.io containerd runc && \
-    # sudo apt-get install \
-    #   ca-certificates \
-    #   curl \
-    #   gnupg                                                                                                # 预装 Docker 需要的软件
-    # sudo mkdir -p /etc/apt/keyrings                                                                                 # 创建公钥文件夹
-    # curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg && # 添加 Docker 官方的 GPG 密钥
-    #   echo \
-    #     "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-    # $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list >/dev/null # 重新建立 apt 仓库
-    # sudo apt-get update -y                                                               # 更新 apt 仓库
-    # sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y  # 安装 docker 相关软件
-    # service docker restart                                                               # 重启 docker 环境
-    echo "安装/更新 docker 环境完成!"
-  else
-    echo "Ubuntu 版本低于 18.04 无法安装 Docker"
-  fi
+  # sudo apt-get remove docker docker-engine docker.io containerd runc && \
+  # sudo apt-get install \
+  #   ca-certificates \
+  #   curl \
+  #   gnupg                                                                                                # 预装 Docker 需要的软件
+  # sudo mkdir -p /etc/apt/keyrings                                                                                 # 创建公钥文件夹
+  # curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg && # 添加 Docker 官方的 GPG 密钥
+  #   echo \
+  #     "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  # $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list >/dev/null # 重新建立 apt 仓库
+  # sudo apt-get update -y                                                               # 更新 apt 仓库
+  # sudo apt-get install docker-ce docker-ce-cli containerd.io docker-compose-plugin -y  # 安装 docker 相关软件
+  # service docker restart                                                               # 重启 docker 环境
+  
+  echo "安装/更新 docker 环境完成!"
 }
 
 # 规范化 Docker 容器名
