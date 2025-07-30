@@ -1,7 +1,7 @@
 # 个人 Debian/Ubuntu 服务器自动初始化脚本
 
 > Linux 发行版：Debian 及其衍生版 <br>
-> CPU 架构：x86-64
+> CPU 指令集架构：x86-64
 
 > 安装时，可选择国内 Github 镜像加速
 
