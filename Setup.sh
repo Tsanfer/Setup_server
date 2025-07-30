@@ -96,7 +96,7 @@ function app_update_init() {
   #   wget - 网络文件下载
   #   rsync - 文件同步
   #   bottom - 图形化系统监控
-  #   neofetch - 系统信息工具
+  #   fastfetch - 系统信息工具
   apt -y install sudo
   sudo apt -y install curl wget zsh git vim unzip bc rsync jq
 
@@ -122,19 +122,32 @@ function app_update_init() {
     echo "已安装 bottom"
   fi
 
-  if ! type neofetch >/dev/null 2>&1; then
-    if ! sudo apt install neofetch -y; then
-      git clone https://$github_repo/dylanaraps/neofetch
-      sudo make -C ~/neofetch install # 手动从 makefile 编译安装
+  # if ! type neofetch >/dev/null 2>&1; then
+  #   if ! sudo apt install neofetch -y; then
+  #     git clone https://$github_repo/dylanaraps/neofetch
+  #     sudo make -C ~/neofetch install # 手动从 makefile 编译安装
+  #   fi
+  # else
+  #   echo "已安装 neofetch"
+  # fi
+
+  if ! type fastfetch >/dev/null 2>&1; then
+    if ! sudo apt -y install fastfetch; then
+      wget https://$github_repo/fastfetch-cli/fastfetch/releases/download/${FASTFETCH_VERSION}/fastfetch-linux-amd64.deb
+      sudo dpkg -i fastfetch-linux-amd64.deb  # 安装
+      # sudo apt-get install -f  # 修复依赖（如有）
     fi
   else
-    echo "已安装 neofetch"
+    echo "已安装 fastfetch"
   fi
 
   # 下载 vim 自定义配置文件
   wget https://$github_raw/Tsanfer/Setup_server/main/.vimrc -P ~
 
-  neofetch
+  fastfetch -s \
+    title:os:kernel:host:board:bios:bootmgr:uptime:packages:shell:cpu:cpucache:gpu:opengl:opencl:vulkan:memory:physicalmemory:swap:disk:physicaldisk:btrfs:zpool:gamepad:display:wifi:localip:publicip:bluetoothradio:battery:poweradapter:loadavg:processes:dateTime:locale:camera:tpm:editor:command:colors:break \
+    --cpu-temp --gpu-temp --physicaldisk-temp --battery-temp
+
   read -rp "按回车键继续"
 }
 
