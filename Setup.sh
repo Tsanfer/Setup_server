@@ -134,7 +134,7 @@ function app_update_init() {
   if ! type fastfetch >/dev/null 2>&1; then
     if ! sudo apt -y install fastfetch; then
       FASTFETCH_VERSION="2.48.1"
-      wget https://ghfast.top/https://github.com/fastfetch-cli/fastfetch/releases/download/${FASTFETCH_VERSION}/fastfetch-linux-amd64.deb
+      wget https://$github_repo/fastfetch-cli/fastfetch/releases/download/${FASTFETCH_VERSION}/fastfetch-linux-amd64.deb
       sudo dpkg -i fastfetch-linux-amd64.deb  # 安装
       # sudo apt-get install -f  # 修复依赖（如有）
     fi
