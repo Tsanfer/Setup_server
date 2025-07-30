@@ -143,7 +143,14 @@ function app_update_init() {
   fi
 
   # 下载 vim 自定义配置文件
-  [ -f ~/.vimrc ] || wget https://$github_raw/Tsanfer/Setup_server/main/.vimrc -O ~/.vimrc
+  if [[ -f "$HOME/.vimrc" ]]; then
+      echo "[提示] ~/.vimrc 已存在，跳过下载。"
+  else
+      echo "[下载] 正在拉取 Vim 配置文件 → $HOME/.vimrc ..."
+      wget  "https://$github_raw/Tsanfer/Setup_server/main/.vimrc" -O "$HOME/.vimrc" \
+        && echo "[完成] Vim 配置文件已保存。" \
+        || echo "[失败] 下载出错，请检查网络或地址！"
+  fi
 
   fastfetch -s \
     title:os:kernel:host:board:bios:bootmgr:uptime:packages:shell:cpu:cpucache:gpu:opengl:opencl:vulkan:memory:physicalmemory:swap:disk:physicaldisk:btrfs:zpool:gamepad:display:wifi:localip:publicip:bluetoothradio:battery:poweradapter:loadavg:processes:dateTime:locale:camera:tpm:editor:command:colors:break \
