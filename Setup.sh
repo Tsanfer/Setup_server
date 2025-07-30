@@ -143,7 +143,7 @@ function app_update_init() {
   fi
 
   # 下载 vim 自定义配置文件
-  wget https://$github_raw/Tsanfer/Setup_server/main/.vimrc -P ~
+  [ -f ~/.vimrc ] || wget https://$github_raw/Tsanfer/Setup_server/main/.vimrc -O ~/.vimrc
 
   fastfetch -s \
     title:os:kernel:host:board:bios:bootmgr:uptime:packages:shell:cpu:cpucache:gpu:opengl:opencl:vulkan:memory:physicalmemory:swap:disk:physicaldisk:btrfs:zpool:gamepad:display:wifi:localip:publicip:bluetoothradio:battery:poweradapter:loadavg:processes:dateTime:locale:camera:tpm:editor:command:colors:break \
