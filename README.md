@@ -13,7 +13,7 @@
   |--|--|--|
   |[rsync](https://github.com/WayneD/rsync)|文件同步|`rsync`|
   |[bottom](https://github.com/ClementTsang/bottom)|图形化系统监控|`btm`|
-  |[neofetch](https://github.com/dylanaraps/neofetch)|系统信息工具|`neofetch`|
+  |[fastfetch](https://github.com/fastfetch-cli/fastfetch)|系统信息工具|`neofetch`|
   
 - 配置 swap 内存
 
