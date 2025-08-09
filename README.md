@@ -5,7 +5,7 @@
 
 > 安装时，可选择国内 Github 镜像加速
 
-> 正在计划使用 Kubernetes 来平替此脚本中的 Docker 相关部署
+<!-- 正在计划使用 Kubernetes 来平替此脚本中的 Docker 相关部署 -->
 
 - APT 软件更新、默认软件安装（可选择是否更换系统软件源）
   > 调用 LinuxMirrors 脚本完成换源
