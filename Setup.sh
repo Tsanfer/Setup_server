@@ -106,7 +106,27 @@ function app_update_init() {
     wget https://$github_release/ClementTsang/bottom/releases/download/0.10.2/bottom_0.10.2-1_amd64.deb -P ~
     # 使用 Debian 软件包管理器，安装 bottom
     sudo dpkg -i ~/bottom_0.10.2-1_amd64.deb
-    # 开启 bottom 的 cache_memory 显示
+
+    # ---------- 2. 设置变量 ----------
+    CONF_DIR="$HOME/.config/bottom"
+    CONF_FILE="$CONF_DIR/bottom.toml"
+    FLAGS=(
+        "enable_cache_memory = true"
+        "network_use_bytes   = true"
+    )
+    
+    # ---------- 3. 创建目录并写配置文件 ----------
+    mkdir -p "$CONF_DIR"
+    
+    {
+        echo "[flags]"
+        printf "%s\n" "${FLAGS[@]}"
+    } > "$CONF_FILE"
+    
+    echo "✅ 已写入配置到 $CONF_FILE"
+    echo "🚀 现在重新运行 'btm' 即可看到效果！"
+
+    # # 开启 bottom 的 cache_memory 显示
     # if [ -e ~/.config/bottom/bottom.toml ]; then
     #   sed -i "s/^.*enable_cache_memory.*/enable_cache_memory = true/g" ~/.config/bottom/bottom.toml
     # else
