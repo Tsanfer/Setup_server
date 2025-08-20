@@ -63,7 +63,6 @@ elif command -v wget >/dev/null 2>&1; then
     bash -c "$(wget https://raw.githubusercontent.com/Tsanfer/Setup_server/main/Setup.sh -O -)"
 else
     echo "请先安装 curl 或 wget" >&2
-    exit 1
 fi
 ```
 
@@ -76,6 +75,5 @@ elif command -v wget >/dev/null 2>&1; then
     bash -c "$(wget https://ghfast.top/https://raw.githubusercontent.com/Tsanfer/Setup_server/main/Setup.sh -O -)"
 else
     echo "请先安装 curl 或 wget" >&2
-    exit 1
 fi
 ```
