@@ -56,7 +56,14 @@
 ## 一键脚本
 
 ```sh
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/Tsanfer/Setup_server/main/Setup.sh)"
+if command -v curl >/dev/null 2>&1; then
+    bash -c "$(curl -fsSL https://raw.githubusercontent.com/Tsanfer/Setup_server/main/Setup.sh)"
+elif command -v wget >/dev/null 2>&1; then
+    bash -c "$(wget https://raw.githubusercontent.com/Tsanfer/Setup_server/main/Setup.sh -O -)"
+else
+    echo "请先安装 curl 或 wget" >&2
+    exit 1
+fi
 ```
 
 或
@@ -68,11 +75,12 @@ bash -c "$(wget https://raw.githubusercontent.com/Tsanfer/Setup_server/main/Setu
 ### 国内使用
 
 ```sh
-bash -c "$(curl -fsSL https://ghfast.top/https://raw.githubusercontent.com/Tsanfer/Setup_server/main/Setup.sh)"
-```
-
-或
-
-```sh
-bash -c "$(wget https://ghfast.top/https://raw.githubusercontent.com/Tsanfer/Setup_server/main/Setup.sh -O -)"
+if command -v curl >/dev/null 2>&1; then
+    bash -c "$(curl -fsSL https://ghfast.top/https://raw.githubusercontent.com/Tsanfer/Setup_server/main/Setup.sh)"
+elif command -v wget >/dev/null 2>&1; then
+    bash -c "$(wget https://ghfast.top/https://raw.githubusercontent.com/Tsanfer/Setup_server/main/Setup.sh -O -)"
+else
+    echo "请先安装 curl 或 wget" >&2
+    exit 1
+fi
 ```
