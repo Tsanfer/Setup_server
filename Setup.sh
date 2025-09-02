@@ -66,9 +66,9 @@ function app_update_init() {
       # echo $sudo_password | sudo bash -c "$(curl -fsSL https://gitee.com/SuperManito/LinuxMirrors/raw/main/ChangeMirrors.sh)"
       # sudo bash -c "$(curl -fsSL https://gitee.com/SuperManito/LinuxMirrors/raw/main/ChangeMirrors.sh)"
       if command -v curl >/dev/null 2>&1; then
-          bash <(curl -sSL https://linuxmirrors.cn/main.sh)
+          sudo bash <(curl -sSL https://linuxmirrors.cn/main.sh)
       elif command -v wget >/dev/null 2>&1; then
-          wget -qO- https://linuxmirrors.cn/main.sh | bash
+          sudo wget -qO- https://linuxmirrors.cn/main.sh | bash
       else
           echo "请先安装 curl 或 wget" >&2
           exit 1
