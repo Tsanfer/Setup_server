@@ -9,7 +9,18 @@
 <!-- 正在计划使用 Kubernetes 来平替此脚本中的 Docker 相关部署 -->
 
 - APT 软件更新、默认软件安装（可选择是否更换系统软件源）
-  > 调用 LinuxMirrors 脚本完成换源
+  > 调用 LinuxMirrors 脚本完成软件仓库换源（需使用 ROOT 用户执行此脚本才能换元成功）
+  > 
+  > 此处给出官方的软件仓库换源脚本
+  > ```bash
+  > if command -v curl >/dev/null 2>&1; then
+  >     bash <(curl -sSL https://linuxmirrors.cn/main.sh)
+  > elif command -v wget >/dev/null 2>&1; then
+  >     wget -qO- https://linuxmirrors.cn/main.sh | bash
+  > else
+  >     echo "请先安装 curl 或 wget" >&2
+  > fi
+  > ```
   
   |部分默认软件|功能|命令|
   |--|--|--|
