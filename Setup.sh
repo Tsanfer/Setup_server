@@ -57,7 +57,7 @@ function app_update_init() {
   echo
   echo "---------- APT 软件更新、默认软件安装 ----------"
   echo
-  read -rp "是否使用 LinuxMirrors 脚本，更换国内软件源? [Y/n] " input
+  read -rp "是否使用 LinuxMirrors 脚本，更换国内软件源?（需使用 ROOT 用户执行此脚本）[Y/n]" input
   while true; do
     case $input in
     [yY])
@@ -66,9 +66,9 @@ function app_update_init() {
       # echo $sudo_password | sudo bash -c "$(curl -fsSL https://gitee.com/SuperManito/LinuxMirrors/raw/main/ChangeMirrors.sh)"
       # sudo bash -c "$(curl -fsSL https://gitee.com/SuperManito/LinuxMirrors/raw/main/ChangeMirrors.sh)"
       if command -v curl >/dev/null 2>&1; then
-          sudo bash <(curl -sSL https://linuxmirrors.cn/main.sh)
+          bash <(curl -sSL https://linuxmirrors.cn/main.sh)
       elif command -v wget >/dev/null 2>&1; then
-          sudo wget -qO- https://linuxmirrors.cn/main.sh | bash
+          wget -qO- https://linuxmirrors.cn/main.sh | bash
       else
           echo "请先安装 curl 或 wget" >&2
           exit 1
