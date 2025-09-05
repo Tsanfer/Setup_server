@@ -151,15 +151,39 @@ function app_update_init() {
   #   echo "已安装 neofetch"
   # fi
 
-  if ! type fastfetch >/dev/null 2>&1; then
-    if ! sudo apt -y install fastfetch; then
-      FASTFETCH_VERSION="2.48.1"
-      wget https://$github_repo/fastfetch-cli/fastfetch/releases/download/${FASTFETCH_VERSION}/fastfetch-linux-amd64.deb
-      sudo dpkg -i fastfetch-linux-amd64.deb  # 安装
-      # sudo apt-get install -f  # 修复依赖（如有）
-    fi
+  # 取 Debian 主版本号
+  DEBIAN_VER=$(grep -oP '^VERSION_ID="\K\d+' /etc/os-release)
+  
+  # 版本判断
+  if (( DEBIAN_VER >= 13 )); then
+      # Debian 13+：优先用仓库
+      if ! type fastfetch >/dev/null 2>&1; then
+          if ! sudo apt -y install fastfetch; then
+              FASTFETCH_VERSION="2.52.0"
+              # 仓库装失败再走手动
+              wget "https://${github_release}/fastfetch-cli/fastfetch/releases/download/${FASTFETCH_VERSION}/fastfetch-linux-amd64.deb"
+              sudo dpkg -i fastfetch-linux-amd64.deb
+              # sudo apt-get install -f   # 如需自动修依赖可去掉注释
+          fi
+      else
+          echo "已安装 fastfetch"
+      fi
+  
+  elif (( DEBIAN_VER == 11 || DEBIAN_VER == 12 )); then
+      # Debian 11/12：直接下包
+      if ! type fastfetch >/dev/null 2>&1; then
+          TAR_FILE="fastfetch-linux-amd64.tar.gz"
+          FASTFETCH_VERSION="2.40.4"
+          wget -O "$TAR_FILE" "https://${github_release}/fastfetch-cli/fastfetch/releases/download/${FASTFETCH_VERSION}/fastfetch-linux-amd64.deb"
+          sudo dpkg -i "$TAR_FILE"
+          # sudo apt-get install -f
+      else
+          echo "已安装 fastfetch"
+      fi
+  
   else
-    echo "已安装 fastfetch"
+      echo "Unsupported Debian version: $DEBIAN_VER"
+      exit 1
   fi
 
   # 下载 vim 自定义配置文件
